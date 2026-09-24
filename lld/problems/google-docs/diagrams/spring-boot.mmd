@@ -1,0 +1,77 @@
+classDiagram
+    class DocumentController {
+        <<@RestController>>
+        -DocumentAppService service
+        +createDocument(CreateDocumentRequest req) ResponseEntity
+        +getDocument(String id, String userId) ResponseEntity
+        +applyOperation(String id, OperationRequest req) ResponseEntity
+        +shareDocument(String id, ShareDocumentRequest req) ResponseEntity
+        +exportDocument(String id, String userId, String format) ResponseEntity
+        +getRevisions(String id, String userId, int sinceRev) ResponseEntity
+    }
+
+    class DocumentAppService {
+        <<@Service>>
+        -DocumentRepository documentRepository
+        -OperationTransformer transformer
+        -Map~String, CollaborationSession~ sessionMap
+        +createDocument(CreateDocumentRequest request) DocumentResponse
+        +getDocument(String docId, String userId) DocumentResponse
+        +applyOperation(String docId, OperationRequest req) CommittedOperationResponse
+        +shareDocument(String docId, ShareDocumentRequest request) void
+        +exportDocument(String docId, String userId, String format) String
+        +getRevisionsSince(String docId, String userId, int sinceRev) List~CommittedOperationResponse~
+    }
+
+    class DocumentRepository {
+        <<interface>>
+        +save(Document doc) Document
+        +findById(String id) Optional~Document~
+        +existsById(String id) boolean
+        +deleteById(String id) void
+    }
+
+    class InMemoryDocumentRepository {
+        <<@Repository>>
+        -Map~String, Document~ store
+        +save(Document doc) Document
+        +findById(String id) Optional~Document~
+    }
+
+    class GlobalExceptionHandler {
+        <<@RestControllerAdvice>>
+        +handleNotFound(DocumentNotFoundException ex) ResponseEntity
+        +handleUnauthorized(UnauthorizedAccessException ex) ResponseEntity
+        +handleBadRequest(RuntimeException ex) ResponseEntity
+    }
+
+    class Document {
+        <<domain>>
+        -String id
+        -String title
+        -int revision
+        -List~Paragraph~ paragraphs
+    }
+
+    class CollaborationSession {
+        <<domain>>
+        -Document document
+        -RevisionLog revisionLog
+        -OperationTransformer transformer
+        +submitOperation(Operation op) CommittedOperation
+    }
+
+    class OperationTransformer {
+        <<domain>>
+        +transform(Operation clientOp, Operation serverOp) Operation
+    }
+
+    DocumentController --> DocumentAppService : injects (HTTP API)
+    DocumentAppService --> DocumentRepository : injects (Persistence)
+    InMemoryDocumentRepository ..|> DocumentRepository : implements
+
+    DocumentAppService o-- CollaborationSession : manages active sessions
+    CollaborationSession o-- Document : encapsulates
+    CollaborationSession --> OperationTransformer : executes OT rules
+
+    GlobalExceptionHandler ..> DocumentController : intercepts errors

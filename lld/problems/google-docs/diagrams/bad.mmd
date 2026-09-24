@@ -1,0 +1,20 @@
+classDiagram
+    class BadGoogleDocManager {
+        -Map~String, String~ documentContents
+        -Map~String, String~ documentTitles
+        -Map~String, Map~String, String~~ documentPermissions
+        -Map~String, List~String~~ undoSnapshots
+        +createDocument(String docId, String title, String ownerId) void
+        +insertText(String docId, String userId, int position, String text) void
+        +deleteText(String docId, String userId, int start, int length) void
+        +applyFormatting(String docId, String userId, int start, int length, String formatType) void
+        +undo(String docId, String userId) void
+        +exportDocument(String docId, String format) String
+        +shareDocument(String docId, String actorId, String targetUserId, String role) void
+        +getDocumentContent(String docId, String userId) String
+        -verifyWriteAccess(String docId, String userId) void
+        -verifyReadAccess(String docId, String userId) void
+        -verifyOwnerAccess(String docId, String userId) void
+    }
+
+    note for BadGoogleDocManager "God Class / Monolithic Monomer\nEntangles storage, string slicing, formatting tags,\nsnapshot history, authorization, and cascading export formatting."

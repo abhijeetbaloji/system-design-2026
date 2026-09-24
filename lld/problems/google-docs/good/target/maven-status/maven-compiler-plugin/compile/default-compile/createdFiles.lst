@@ -1,0 +1,15 @@
+com/systemdesign/lld/googledocs/good/Operation.class
+com/systemdesign/lld/googledocs/good/DeleteTextOperation.class
+com/systemdesign/lld/googledocs/good/MarkdownExporter.class
+com/systemdesign/lld/googledocs/good/DocumentExporter.class
+com/systemdesign/lld/googledocs/good/HtmlExporter.class
+com/systemdesign/lld/googledocs/good/Document.class
+com/systemdesign/lld/googledocs/good/PlainTextExporter.class
+com/systemdesign/lld/googledocs/good/DocumentService.class
+com/systemdesign/lld/googledocs/good/AccessControlService.class
+com/systemdesign/lld/googledocs/good/FormatTextOperation.class
+com/systemdesign/lld/googledocs/good/TextSpan.class
+com/systemdesign/lld/googledocs/good/InsertTextOperation.class
+com/systemdesign/lld/googledocs/good/TextStyle.class
+com/systemdesign/lld/googledocs/good/UndoManager.class
+com/systemdesign/lld/googledocs/good/Role.class

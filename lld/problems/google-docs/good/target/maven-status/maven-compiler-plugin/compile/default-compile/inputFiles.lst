@@ -1,0 +1,15 @@
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/AccessControlService.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/DeleteTextOperation.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/Document.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/DocumentExporter.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/DocumentService.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/FormatTextOperation.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/HtmlExporter.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/InsertTextOperation.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/MarkdownExporter.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/Operation.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/PlainTextExporter.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/Role.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/TextSpan.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/TextStyle.java
+/Users/abhijeet/Desktop/system-design-2026/lld/problems/google-docs/good/src/main/java/com/systemdesign/lld/googledocs/good/UndoManager.java

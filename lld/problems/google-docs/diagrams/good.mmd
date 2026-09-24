@@ -1,0 +1,142 @@
+classDiagram
+    class DocumentService {
+        -Map~String, Document~ documents
+        -Map~String, UndoManager~ undoManagers
+        -AccessControlService accessControlService
+        +createDocument(String docId, String title, String ownerId) Document
+        +insertText(String docId, String userId, int position, String text, TextStyle style) void
+        +deleteText(String docId, String userId, int start, int length) void
+        +applyFormat(String docId, String userId, int start, int length, TextStyle style) void
+        +undo(String docId, String userId) void
+        +redo(String docId, String userId) void
+        +shareDocument(String docId, String actorId, String targetUserId, Role role) void
+        +exportDocument(String docId, String userId, DocumentExporter exporter) String
+        +getDocumentText(String docId, String userId) String
+    }
+
+    class Document {
+        -String id
+        -String title
+        -String ownerId
+        -List~TextSpan~ spans
+        -Map~String, Role~ userRoles
+        -ReentrantLock lock
+        +insert(int position, String text, TextStyle style) void
+        +delete(int start, int length) List~TextSpan~
+        +applyStyle(int start, int length, TextStyle style) void
+        +getText() String
+        +getSpans() List~TextSpan~
+        +assignRole(String userId, Role role) void
+        +getRole(String userId) Role
+        +getLock() ReentrantLock
+    }
+
+    class TextSpan {
+        -String text
+        -TextStyle style
+        +getText() String
+        +setText(String text) void
+        +getStyle() TextStyle
+        +setStyle(TextStyle style) void
+        +length() int
+    }
+
+    class TextStyle {
+        <<immutable>>
+        -boolean bold
+        -boolean italic
+        -int fontSize
+        +isBold() boolean
+        +isItalic() boolean
+        +getFontSize() int
+    }
+
+    class Role {
+        <<enumeration>>
+        OWNER
+        EDITOR
+        VIEWER
+    }
+
+    class UndoManager {
+        -Deque~Operation~ undoStack
+        -Deque~Operation~ redoStack
+        +executeOperation(Operation op, Document doc) void
+        +undo(Document doc) void
+        +redo(Document doc) void
+        +canUndo() boolean
+        +canRedo() boolean
+    }
+
+    class Operation {
+        <<interface>>
+        +execute(Document document) void
+        +undo(Document document) void
+    }
+
+    class InsertTextOperation {
+        -int position
+        -String text
+        -TextStyle style
+        +execute(Document document) void
+        +undo(Document document) void
+    }
+
+    class DeleteTextOperation {
+        -int start
+        -int length
+        -List~TextSpan~ savedSpans
+        +execute(Document document) void
+        +undo(Document document) void
+    }
+
+    class FormatTextOperation {
+        -int start
+        -int length
+        -TextStyle newStyle
+        -List~TextSpan~ previousSpans
+        +execute(Document document) void
+        +undo(Document document) void
+    }
+
+    class AccessControlService {
+        +validateReadAccess(Document doc, String userId) void
+        +validateWriteAccess(Document doc, String userId) void
+        +validateOwnerAccess(Document doc, String userId) void
+    }
+
+    class DocumentExporter {
+        <<interface>>
+        +export(Document document) String
+    }
+
+    class PlainTextExporter {
+        +export(Document document) String
+    }
+
+    class MarkdownExporter {
+        +export(Document document) String
+    }
+
+    class HtmlExporter {
+        +export(Document document) String
+    }
+
+    DocumentService o-- Document : manages
+    DocumentService o-- UndoManager : manages
+    DocumentService --> AccessControlService : authorizes via
+    DocumentService --> DocumentExporter : exports via
+
+    Document *-- TextSpan : contains ordered
+    TextSpan --> TextStyle : styled with
+    Document --> Role : RBAC mapping
+
+    UndoManager o-- Operation : tracks history
+
+    Operation <|.. InsertTextOperation : realizes
+    Operation <|.. DeleteTextOperation : realizes
+    Operation <|.. FormatTextOperation : realizes
+
+    DocumentExporter <|.. PlainTextExporter : realizes
+    DocumentExporter <|.. MarkdownExporter : realizes
+    DocumentExporter <|.. HtmlExporter : realizes

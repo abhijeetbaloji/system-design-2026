@@ -1,0 +1,188 @@
+classDiagram
+    class DocumentElement {
+        <<interface>>
+        +getLength() int
+        +getText() String
+        +accept(DocumentVisitor visitor) void
+    }
+
+    class TextRun {
+        -String text
+        -TextStyle style
+        +getLength() int
+        +getText() String
+        +setText(String text) void
+        +getStyle() TextStyle
+        +accept(DocumentVisitor visitor) void
+    }
+
+    class Paragraph {
+        -List~TextRun~ runs
+        +insert(int pos, String text, TextStyle style) void
+        +delete(int start, int len) List~TextRun~
+        +applyStyle(int start, int len, TextStyle style) void
+        +accept(DocumentVisitor visitor) void
+    }
+
+    class Document {
+        -String id
+        -String title
+        -String ownerId
+        -int revision
+        -List~Paragraph~ paragraphs
+        -Map~String, Role~ userRoles
+        -ReentrantLock lock
+        +insert(int position, String text, TextStyle style) void
+        +delete(int start, int length) void
+        +applyFormat(int start, int length, TextStyle style) void
+        +accept(DocumentVisitor visitor) void
+    }
+
+    class TextStyle {
+        <<immutable>>
+        -boolean bold
+        -boolean italic
+        -int fontSize
+    }
+
+    class Role {
+        <<enumeration>>
+        OWNER
+        EDITOR
+        VIEWER
+    }
+
+    class Operation {
+        <<interface>>
+        +getAuthorId() String
+        +getBaseRevision() int
+        +getPosition() int
+        +apply(Document doc) void
+        +invert(Document doc) Operation
+    }
+
+    class InsertOperation {
+        -String text
+        -TextStyle style
+        +apply(Document doc) void
+        +invert(Document doc) Operation
+    }
+
+    class DeleteOperation {
+        -int length
+        -String capturedDeletedText
+        +apply(Document doc) void
+        +invert(Document doc) Operation
+    }
+
+    class FormatOperation {
+        -int length
+        -TextStyle style
+        +apply(Document doc) void
+        +invert(Document doc) Operation
+    }
+
+    class OperationTransformer {
+        <<strategy>>
+        +transform(Operation clientOp, Operation serverOp) Operation
+        -transformInsertVsInsert(...) Operation
+        -transformInsertVsDelete(...) Operation
+        -transformDeleteVsInsert(...) Operation
+        -transformDeleteVsDelete(...) Operation
+    }
+
+    class CommittedOperation {
+        <<immutable>>
+        -int revisionNumber
+        -Operation operation
+        -Instant timestamp
+        +getRevisionNumber() int
+        +getOperation() Operation
+    }
+
+    class RevisionLog {
+        -List~CommittedOperation~ log
+        +append(CommittedOperation op) void
+        +getOperationsSince(int baseRevision) List~CommittedOperation~
+        +getLatestRevision() int
+    }
+
+    class CollaborationSession {
+        -Document document
+        -RevisionLog revisionLog
+        -OperationTransformer transformer
+        -List~SessionEventListener~ listeners
+        +submitOperation(Operation clientOp) CommittedOperation
+        +addListener(SessionEventListener l) void
+    }
+
+    class SessionEventListener {
+        <<interface>>
+        +onOperationCommitted(String docId, CommittedOperation op) void
+    }
+
+    class DocumentVisitor {
+        <<interface>>
+        +visit(Document document) void
+        +visit(Paragraph paragraph) void
+        +visit(TextRun textRun) void
+        +getOutput() String
+    }
+
+    class PlainTextVisitor {
+        +getOutput() String
+    }
+
+    class MarkdownVisitor {
+        +getOutput() String
+    }
+
+    class HtmlVisitor {
+        +getOutput() String
+    }
+
+    class PermissionValidator {
+        +checkReadAccess(Document doc, String userId) void
+        +checkWriteAccess(Document doc, String userId) void
+        +checkOwnerAccess(Document doc, String userId) void
+    }
+
+    class DocumentCollaborationService {
+        -Map~String, Document~ documentRepository
+        -Map~String, CollaborationSession~ activeSessions
+        -PermissionValidator permissionValidator
+        -OperationTransformer operationTransformer
+        +createDocument(String docId, String title, String ownerId) Document
+        +applyOperation(String docId, Operation op) CommittedOperation
+        +exportDocument(String docId, String userId, DocumentVisitor v) String
+    }
+
+    DocumentElement <|.. TextRun : leaf
+    DocumentElement <|.. Paragraph : composite
+    DocumentElement <|.. Document : aggregate root
+
+    Paragraph *-- TextRun : contains
+    Document *-- Paragraph : contains
+    TextRun --> TextStyle : styled by
+    Document --> Role : RBAC mapping
+
+    Operation <|.. InsertOperation
+    Operation <|.. DeleteOperation
+    Operation <|.. FormatOperation
+
+    CommittedOperation --> Operation : wraps
+    RevisionLog o-- CommittedOperation : appends
+
+    CollaborationSession o-- Document : coordinates
+    CollaborationSession o-- RevisionLog : maintains
+    CollaborationSession --> OperationTransformer : transforms via
+    CollaborationSession --> SessionEventListener : notifies (Observer)
+
+    DocumentVisitor <|.. PlainTextVisitor
+    DocumentVisitor <|.. MarkdownVisitor
+    DocumentVisitor <|.. HtmlVisitor
+    DocumentElement --> DocumentVisitor : accepts
+
+    DocumentCollaborationService o-- Document : stores
+    DocumentCollaborationService o-- CollaborationSession : creates
+    DocumentCollaborationService --> PermissionValidator : validates via
