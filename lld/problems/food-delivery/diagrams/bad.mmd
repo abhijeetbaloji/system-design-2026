@@ -1,0 +1,70 @@
+classDiagram
+    note "Bad Design: Monolithic God-Class with Tight Coupling, Primitive Obsession, Leaky Encapsulation"
+
+    class FoodDeliveryMonolithManager {
+        -Map~String, Restaurant~ restaurants
+        -Map~String, Cart~ carts
+        -Map~String, Order~ orders
+        -Map~String, DeliveryPartner~ drivers
+        +addRestaurant(String id, String name, double lat, double lon)
+        +addMenuItem(String restId, String itemId, String name, double price)
+        +addToCart(String custId, String restId, String itemId, int qty)
+        +placeOrder(String custId, String paymentType, String cardOrUpi) Order
+        +updateOrderStatus(String orderId, String newStatus)
+        +assignDriver(String orderId)
+        +cancelOrder(String orderId)
+    }
+
+    class Restaurant {
+        +String id
+        +String name
+        +double latitude
+        +double longitude
+        +Map~String, MenuItem~ items
+    }
+
+    class MenuItem {
+        +String id
+        +String name
+        +double price
+        +boolean isAvailable
+    }
+
+    class Cart {
+        +String customerId
+        +List~CartItem~ items
+        +double calculateTotal()
+    }
+
+    class CartItem {
+        +MenuItem item
+        +int quantity
+    }
+
+    class Order {
+        +String orderId
+        +String customerId
+        +String restaurantId
+        +String driverId
+        +List~MenuItem~ items
+        +double totalAmount
+        +String status
+        +setStatus(String status)
+    }
+
+    class DeliveryPartner {
+        +String id
+        +String name
+        +double latitude
+        +double longitude
+        +boolean isAvailable
+    }
+
+    FoodDeliveryMonolithManager --> Restaurant : manages directly
+    FoodDeliveryMonolithManager --> Cart : manages directly
+    FoodDeliveryMonolithManager --> Order : creates and mutates
+    FoodDeliveryMonolithManager --> DeliveryPartner : manages directly
+    Restaurant o-- MenuItem : stores
+    Cart o-- CartItem : stores
+    CartItem --> MenuItem : references directly
+    Order o-- MenuItem : stores live mutable references

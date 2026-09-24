@@ -1,0 +1,78 @@
+classDiagram
+    note "Spring Boot Application Architecture: Controllers, DTOs, Application Services, Repositories, Domain Layer"
+
+    class RestaurantController {
+        -RestaurantApplicationService restaurantService
+        +getAllRestaurants() ResponseEntity
+        +getRestaurantMenu(String id) ResponseEntity
+        +createRestaurant(CreateRestaurantRequest request) ResponseEntity
+    }
+
+    class CartController {
+        -CartApplicationService cartService
+        +getCart(String customerId) ResponseEntity
+        +addToCart(String customerId, AddToCartRequest request) ResponseEntity
+        +clearCart(String customerId) ResponseEntity
+    }
+
+    class OrderController {
+        -OrderApplicationService orderService
+        +checkout(String customerId, CheckoutRequest request) ResponseEntity
+        +getOrder(String orderId) ResponseEntity
+        +cancelOrder(String orderId) ResponseEntity
+    }
+
+    class DeliveryPartnerController {
+        -DeliveryApplicationService deliveryService
+        +registerPartner(CreatePartnerRequest request) ResponseEntity
+        +acceptDelivery(String partnerId, String orderId) ResponseEntity
+        +updateStatus(String partnerId, String orderId, String status) ResponseEntity
+    }
+
+    class RestaurantApplicationService {
+        -RestaurantRepository restaurantRepo
+    }
+
+    class CartApplicationService {
+        -CartRepository cartRepo
+        -RestaurantRepository restaurantRepo
+    }
+
+    class OrderApplicationService {
+        -OrderRepository orderRepo
+        -CartRepository cartRepo
+        -CustomerRepository customerRepo
+        -RestaurantRepository restaurantRepo
+        -DeliveryFeeStrategy feeStrategy
+        -DiscountStrategy discountStrategy
+        -PaymentProcessorFactory paymentFactory
+        -OrderEventPublisher publisher
+    }
+
+    class DeliveryApplicationService {
+        -DeliveryPartnerRepository partnerRepo
+        -OrderRepository orderRepo
+        -DeliveryPartnerMatchingStrategy matchingStrategy
+        -OrderEventPublisher publisher
+    }
+
+    class GlobalExceptionHandler {
+        +handleNotFound(ResourceNotFoundException ex) ResponseEntity
+        +handleInvalidState(IllegalStateException ex) ResponseEntity
+        +handleRestaurantMismatch(RestaurantMismatchException ex) ResponseEntity
+    }
+
+    RestaurantController --> RestaurantApplicationService : delegates to
+    CartController --> CartApplicationService : delegates to
+    OrderController --> OrderApplicationService : delegates to
+    DeliveryPartnerController --> DeliveryApplicationService : delegates to
+
+    RestaurantApplicationService --> RestaurantRepository : accesses
+    CartApplicationService --> CartRepository : accesses
+    CartApplicationService --> RestaurantRepository : accesses
+    OrderApplicationService --> OrderRepository : accesses
+    OrderApplicationService --> CartRepository : accesses
+    OrderApplicationService --> CustomerRepository : accesses
+    OrderApplicationService --> RestaurantRepository : accesses
+    DeliveryApplicationService --> DeliveryPartnerRepository : accesses
+    DeliveryApplicationService --> OrderRepository : accesses

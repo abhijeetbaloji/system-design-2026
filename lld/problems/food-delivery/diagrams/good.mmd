@@ -1,0 +1,134 @@
+classDiagram
+    note "Good Design: Clean OOP, Encapsulation, Immutability, Separation of Concerns"
+
+    class Location {
+        -double latitude
+        -double longitude
+        +distanceTo(Location other) double
+    }
+
+    class Restaurant {
+        -String id
+        -String name
+        -Location location
+        -Menu menu
+        -boolean active
+        +getMenu() Menu
+    }
+
+    class Menu {
+        -Map~String, MenuItem~ items
+        +addItem(MenuItem item)
+        +getItem(String itemId) MenuItem
+    }
+
+    class MenuItem {
+        -String id
+        -String name
+        -double price
+        -boolean available
+        -FoodCategory category
+    }
+
+    class Cart {
+        -String customerId
+        -String restaurantId
+        -Map~String, CartItem~ items
+        +addItem(String restaurantId, MenuItem item, int quantity)
+        +removeItem(String menuItemId)
+        +getSubtotal() double
+        +clear()
+    }
+
+    class CartItem {
+        -MenuItem item
+        -int quantity
+        +getSubtotal() double
+    }
+
+    class Order {
+        -String orderId
+        -String customerId
+        -String restaurantId
+        -List~OrderItem~ items
+        -OrderBill bill
+        -OrderStatus status
+        -String deliveryPartnerId
+        +transitionTo(OrderStatus nextStatus)
+        +assignDeliveryPartner(String partnerId)
+    }
+
+    class OrderItem {
+        <<immutable>>
+        -String menuItemId
+        -String itemName
+        -double unitPrice
+        -int quantity
+        +getSubtotal() double
+    }
+
+    class OrderBill {
+        <<immutable>>
+        -double subtotal
+        -double deliveryFee
+        -double tax
+        -double totalAmount
+    }
+
+    class OrderStatus {
+        <<enumeration>>
+        PLACED
+        CONFIRMED
+        PREPARING
+        READY_FOR_PICKUP
+        OUT_FOR_DELIVERY
+        DELIVERED
+        CANCELLED
+        +canTransitionTo(OrderStatus next) boolean
+    }
+
+    class DeliveryPartner {
+        -String id
+        -String name
+        -Location location
+        -PartnerStatus status
+        +assignOrder()
+        +completeDelivery()
+    }
+
+    class PaymentProcessor {
+        <<interface>>
+        +process(double amount) PaymentResult
+    }
+
+    class CreditCardPaymentProcessor {
+        +process(double amount) PaymentResult
+    }
+
+    class UpiPaymentProcessor {
+        +process(double amount) PaymentResult
+    }
+
+    class CashOnDeliveryPaymentProcessor {
+        +process(double amount) PaymentResult
+    }
+
+    class OrderService {
+        -PaymentProcessor paymentProcessor
+        +placeOrder(Cart cart, PaymentMethod method) Order
+        +updateStatus(String orderId, OrderStatus nextStatus)
+    }
+
+    Restaurant *-- Menu : owns
+    Restaurant --> Location : has
+    Menu o-- MenuItem : contains
+    Cart *-- CartItem : contains
+    CartItem --> MenuItem : references
+    Order *-- OrderItem : contains immutable snapshot
+    Order *-- OrderBill : contains
+    Order --> OrderStatus : has
+    OrderService --> PaymentProcessor : uses
+    PaymentProcessor <|.. CreditCardPaymentProcessor : implements
+    PaymentProcessor <|.. UpiPaymentProcessor : implements
+    PaymentProcessor <|.. CashOnDeliveryPaymentProcessor : implements
+    DeliveryPartner --> Location : has

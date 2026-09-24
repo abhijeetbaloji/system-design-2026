@@ -1,0 +1,110 @@
+classDiagram
+    note "Interview-Ready Design: Extensible Strategies, Lifecycle Observers, Guarded State Machine, Thread-Safe Repositories"
+
+    class DeliveryFeeStrategy {
+        <<interface>>
+        +calculateFee(Location restaurantLoc, Location customerLoc, double subtotal) double
+    }
+
+    class DistanceBasedDeliveryFeeStrategy {
+        -double baseFee
+        -double perKmRate
+        +calculateFee(Location restaurantLoc, Location customerLoc, double subtotal) double
+    }
+
+    class SurgeDeliveryFeeStrategy {
+        -DeliveryFeeStrategy baseStrategy
+        -double surgeMultiplier
+        +calculateFee(Location restaurantLoc, Location customerLoc, double subtotal) double
+    }
+
+    class DiscountStrategy {
+        <<interface>>
+        +calculateDiscount(double subtotal) double
+    }
+
+    class PercentageDiscountStrategy {
+        -double percentage
+        -double maxDiscount
+        +calculateDiscount(double subtotal) double
+    }
+
+    class FlatDiscountStrategy {
+        -double minSubtotal
+        -double discountAmount
+        +calculateDiscount(double subtotal) double
+    }
+
+    class DeliveryPartnerMatchingStrategy {
+        <<interface>>
+        +matchPartner(List~DeliveryPartner~ availablePartners, Location pickupLoc) Optional~DeliveryPartner~
+    }
+
+    class NearestPartnerMatchingStrategy {
+        +matchPartner(List~DeliveryPartner~ availablePartners, Location pickupLoc) Optional~DeliveryPartner~
+    }
+
+    class HighestRatedPartnerMatchingStrategy {
+        +matchPartner(List~DeliveryPartner~ availablePartners, Location pickupLoc) Optional~DeliveryPartner~
+    }
+
+    class OrderObserver {
+        <<interface>>
+        +onOrderStatusChanged(Order order, OrderStatus previousStatus, OrderStatus newStatus)
+    }
+
+    class CustomerNotifier {
+        +onOrderStatusChanged(Order order, OrderStatus previousStatus, OrderStatus newStatus)
+    }
+
+    class RestaurantNotifier {
+        +onOrderStatusChanged(Order order, OrderStatus previousStatus, OrderStatus newStatus)
+    }
+
+    class DeliveryPartnerNotifier {
+        +onOrderStatusChanged(Order order, OrderStatus previousStatus, OrderStatus newStatus)
+    }
+
+    class OrderAuditLogger {
+        -List~String~ auditHistory
+        +onOrderStatusChanged(Order order, OrderStatus previousStatus, OrderStatus newStatus)
+    }
+
+    class OrderEventPublisher {
+        -List~OrderObserver~ observers
+        +registerObserver(OrderObserver observer)
+        +notifyObservers(Order order, OrderStatus prev, OrderStatus next)
+    }
+
+    class OrderCheckoutService {
+        -DeliveryFeeStrategy feeStrategy
+        -DiscountStrategy discountStrategy
+        -PaymentProcessorFactory paymentFactory
+        -OrderEventPublisher publisher
+        +checkout(Cart cart, Customer customer, PaymentMethod method, String promoCode) Order
+    }
+
+    class DeliveryDispatchService {
+        -DeliveryPartnerMatchingStrategy matchingStrategy
+        -DeliveryPartnerRepository partnerRepo
+        -OrderEventPublisher publisher
+        +dispatchPartner(Order order, Location pickupLocation) DeliveryPartner
+    }
+
+    DeliveryFeeStrategy <|.. DistanceBasedDeliveryFeeStrategy : implements
+    DeliveryFeeStrategy <|.. SurgeDeliveryFeeStrategy : implements
+    SurgeDeliveryFeeStrategy --> DeliveryFeeStrategy : wraps (decorator)
+    DiscountStrategy <|.. PercentageDiscountStrategy : implements
+    DiscountStrategy <|.. FlatDiscountStrategy : implements
+    DeliveryPartnerMatchingStrategy <|.. NearestPartnerMatchingStrategy : implements
+    DeliveryPartnerMatchingStrategy <|.. HighestRatedPartnerMatchingStrategy : implements
+    OrderObserver <|.. CustomerNotifier : implements
+    OrderObserver <|.. RestaurantNotifier : implements
+    OrderObserver <|.. DeliveryPartnerNotifier : implements
+    OrderObserver <|.. OrderAuditLogger : implements
+    OrderEventPublisher o-- OrderObserver : registers
+    OrderCheckoutService --> DeliveryFeeStrategy : uses
+    OrderCheckoutService --> DiscountStrategy : uses
+    OrderCheckoutService --> OrderEventPublisher : uses
+    DeliveryDispatchService --> DeliveryPartnerMatchingStrategy : uses
+    DeliveryDispatchService --> OrderEventPublisher : uses
