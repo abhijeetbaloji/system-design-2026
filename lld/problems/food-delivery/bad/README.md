@@ -97,3 +97,34 @@ While the code compiles, executes, and passes a basic happy path test, it suffer
 4. **Guarded State Machine**: Enforce strict, valid transitions between `OrderStatus` states.
 5. **Decouple Payments via Abstraction**: Introduce a `PaymentProcessor` interface to satisfy OCP and DIP.
 6. **Encapsulate Value Objects**: Replace raw coordinate doubles with an immutable `Location` record.
+
+---
+
+## 9. How to Run
+
+### Prerequisites
+- Java 21+
+- Apache Maven 3.8+
+
+### Running Tests via Terminal (Maven)
+
+Navigate to this directory (`lld/problems/food-delivery/bad`):
+
+```bash
+# Run all tests (happy path + tests demonstrating the architectural flaws)
+mvn test
+
+# Run only this test class
+mvn test -Dtest=FoodDeliveryMonolithManagerTest
+
+# Run a specific flaw demonstration test (e.g., Price Mutation Flaw)
+mvn test -Dtest=FoodDeliveryMonolithManagerTest#testRetroactivePriceMutationFlaw
+```
+
+### Running via IDE (VS Code / IntelliJ)
+
+1. Open `src/test/java/com/systemdesign/lld/fooddelivery/bad/FoodDeliveryMonolithManagerTest.java`.
+2. Click the **Green Play button (▶)** in the editor gutter:
+   - Next to the class definition (line 9) to run all tests.
+   - Next to any individual `@Test` method to run only that test case.
+

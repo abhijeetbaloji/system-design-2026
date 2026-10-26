@@ -100,3 +100,38 @@ The Good Design decomposes the monolithic God class into focused, cohesive domai
   Copying `CartItem` data into new `OrderItem` snapshot instances requires a minor memory allocation per order item, but completely eliminates data corruption when restaurants update catalog prices.
 - **Synchronous Simplicity**:
   Using synchronous method calls for payments and partner assignment keeps the design simple, readable, and 100% testable without introducing asynchronous complexity or message brokers.
+
+---
+
+## 8. How to Run
+
+### Prerequisites
+- Java 21+
+- Apache Maven 3.8+
+
+### Running Tests via Terminal (Maven)
+
+Navigate to this directory (`lld/problems/food-delivery/good`):
+
+```bash
+# Run all tests (verifies end-to-end checkout, price immutability, state transitions, etc.)
+mvn test
+
+# Run only this test class
+mvn test -Dtest=FoodDeliveryGoodTest
+
+# Run a specific test scenario
+mvn test -Dtest=FoodDeliveryGoodTest#testHappyPathEndToEnd
+mvn test -Dtest=FoodDeliveryGoodTest#testPriceImmutability
+mvn test -Dtest=FoodDeliveryGoodTest#testSingleRestaurantCartConstraint
+mvn test -Dtest=FoodDeliveryGoodTest#testInvalidStateTransitions
+mvn test -Dtest=FoodDeliveryGoodTest#testPaymentFailure
+```
+
+### Running via IDE (VS Code / IntelliJ)
+
+1. Open `src/test/java/com/systemdesign/lld/fooddelivery/good/FoodDeliveryGoodTest.java`.
+2. Click the **Green Play button (▶)** in the gutter:
+   - Next to `public class FoodDeliveryGoodTest` (line 9) to run all 5 test cases.
+   - Next to any individual `@Test` method to run only that scenario.
+
