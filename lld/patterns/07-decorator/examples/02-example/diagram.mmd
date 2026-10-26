@@ -1,0 +1,71 @@
+classDiagram
+    direction TB
+
+    class DataSource {
+        <<interface>>
+        +writeData(byte[] data) void
+        +readData() byte[]
+    }
+
+    class FileDataSource {
+        -Path path
+        +FileDataSource(Path path)
+        +writeData(byte[] data) void
+        +readData() byte[]
+        +getPath() Path
+    }
+
+    class MemoryDataSource {
+        -byte[] buffer
+        +writeData(byte[] data) void
+        +readData() byte[]
+        +size() int
+    }
+
+    class DataSourceDecorator {
+        <<abstract>>
+        #DataSource wrappee
+        +DataSourceDecorator(DataSource wrappee)
+        +writeData(byte[] data) void
+        +readData() byte[]
+    }
+
+    class CompressionDecorator {
+        -int compressionLevel
+        +CompressionDecorator(DataSource wrappee)
+        +CompressionDecorator(DataSource wrappee, int level)
+        +writeData(byte[] data) void
+        +readData() byte[]
+        -compress(byte[] input) byte[]
+        -decompress(byte[] input) byte[]
+    }
+
+    class EncryptionDecorator {
+        -byte[] secretKey
+        +EncryptionDecorator(DataSource wrappee, byte[] key)
+        +writeData(byte[] data) void
+        +readData() byte[]
+        -transform(byte[] input) byte[]
+    }
+
+    class Base64EncodingDecorator {
+        +Base64EncodingDecorator(DataSource wrappee)
+        +writeData(byte[] data) void
+        +readData() byte[]
+    }
+
+    class LoggingDataSourceDecorator {
+        -String stageLabel
+        +LoggingDataSourceDecorator(DataSource wrappee, String label)
+        +writeData(byte[] data) void
+        +readData() byte[]
+    }
+
+    DataSource <|.. FileDataSource : implements
+    DataSource <|.. MemoryDataSource : implements
+    DataSource <|.. DataSourceDecorator : implements
+    DataSourceDecorator o--> DataSource : aggregates (wraps)
+    DataSourceDecorator <|-- CompressionDecorator : extends
+    DataSourceDecorator <|-- EncryptionDecorator : extends
+    DataSourceDecorator <|-- Base64EncodingDecorator : extends
+    DataSourceDecorator <|-- LoggingDataSourceDecorator : extends

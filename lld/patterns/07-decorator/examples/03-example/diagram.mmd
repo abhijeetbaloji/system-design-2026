@@ -1,0 +1,73 @@
+classDiagram
+    direction TB
+
+    class Notifier {
+        <<interface>>
+        +send(String recipient, String subject, String message) void
+    }
+
+    class EmailNotifier {
+        -AtomicInteger transientFailureCountdown
+        +EmailNotifier()
+        +EmailNotifier(int simulateInitialFailures)
+        +send(String recipient, String subject, String message) void
+    }
+
+    class SlackNotifier {
+        -String webhookUrl
+        +SlackNotifier(String webhookUrl)
+        +send(String recipient, String subject, String message) void
+    }
+
+    class SmsNotifier {
+        +send(String recipient, String subject, String message) void
+    }
+
+    class NotifierDecorator {
+        <<abstract>>
+        #Notifier wrappee
+        +NotifierDecorator(Notifier wrappee)
+        +send(String recipient, String subject, String message) void
+    }
+
+    class LoggingNotifierDecorator {
+        +LoggingNotifierDecorator(Notifier wrappee)
+        +send(String recipient, String subject, String message) void
+    }
+
+    class RetryNotifierDecorator {
+        -int maxRetries
+        -long backoffMillis
+        +RetryNotifierDecorator(Notifier wrappee, int maxRetries, long backoffMillis)
+        +send(String recipient, String subject, String message) void
+        -sleep(long millis) void
+    }
+
+    class RateLimitingNotifierDecorator {
+        -long minIntervalMillis
+        -Map~String, Instant~ lastDispatchTimes
+        +RateLimitingNotifierDecorator(Notifier wrappee, long minIntervalMillis)
+        +send(String recipient, String subject, String message) void
+    }
+
+    class MetricsNotifierDecorator {
+        -AtomicLong totalRequests
+        -AtomicLong successfulRequests
+        -AtomicLong failedRequests
+        +MetricsNotifierDecorator(Notifier wrappee)
+        +send(String recipient, String subject, String message) void
+        +getTotalRequests() long
+        +getSuccessfulRequests() long
+        +getFailedRequests() long
+        +printReport() void
+    }
+
+    Notifier <|.. EmailNotifier : implements
+    Notifier <|.. SlackNotifier : implements
+    Notifier <|.. SmsNotifier : implements
+    Notifier <|.. NotifierDecorator : implements
+    NotifierDecorator o--> Notifier : aggregates (wraps)
+    NotifierDecorator <|-- LoggingNotifierDecorator : extends
+    NotifierDecorator <|-- RetryNotifierDecorator : extends
+    NotifierDecorator <|-- RateLimitingNotifierDecorator : extends
+    NotifierDecorator <|-- MetricsNotifierDecorator : extends

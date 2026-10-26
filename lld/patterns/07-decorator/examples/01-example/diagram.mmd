@@ -1,0 +1,77 @@
+classDiagram
+    direction TB
+
+    class Beverage {
+        <<interface>>
+        +getDescription() String
+        +getCost() double
+    }
+
+    class Espresso {
+        +getDescription() String
+        +getCost() double
+    }
+
+    class DarkRoast {
+        +getDescription() String
+        +getCost() double
+    }
+
+    class Decaf {
+        +getDescription() String
+        +getCost() double
+    }
+
+    class CondimentDecorator {
+        <<abstract>>
+        #Beverage beverage
+        +CondimentDecorator(Beverage beverage)
+        +getDescription()* String
+        +getCost()* double
+    }
+
+    class Milk {
+        -double MILK_COST = 0.50
+        +Milk(Beverage beverage)
+        +getDescription() String
+        +getCost() double
+    }
+
+    class Mocha {
+        -double MOCHA_COST = 0.75
+        +Mocha(Beverage beverage)
+        +getDescription() String
+        +getCost() double
+    }
+
+    class Soy {
+        -double SOY_COST = 0.60
+        +Soy(Beverage beverage)
+        +getDescription() String
+        +getCost() double
+    }
+
+    class Whip {
+        -double WHIP_COST = 0.40
+        +Whip(Beverage beverage)
+        +getDescription() String
+        +getCost() double
+    }
+
+    class Caramel {
+        -double CARAMEL_COST = 0.80
+        +Caramel(Beverage beverage)
+        +getDescription() String
+        +getCost() double
+    }
+
+    Beverage <|.. Espresso : implements
+    Beverage <|.. DarkRoast : implements
+    Beverage <|.. Decaf : implements
+    Beverage <|.. CondimentDecorator : implements
+    CondimentDecorator o--> Beverage : aggregates (wraps)
+    CondimentDecorator <|-- Milk : extends
+    CondimentDecorator <|-- Mocha : extends
+    CondimentDecorator <|-- Soy : extends
+    CondimentDecorator <|-- Whip : extends
+    CondimentDecorator <|-- Caramel : extends
