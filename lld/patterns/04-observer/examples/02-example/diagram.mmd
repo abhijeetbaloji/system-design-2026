@@ -1,0 +1,83 @@
+classDiagram
+    direction TB
+
+    class OrderSubject {
+        <<interface>>
+        +attach(observer: OrderObserver) void
+        +detach(observer: OrderObserver) void
+        +notifyObservers(order: FoodOrder, previousStatus: OrderStatus) void
+        +getObserverCount() int
+    }
+
+    class OrderObserver {
+        <<interface>>
+        +onOrderStatusChanged(order: FoodOrder, previousStatus: OrderStatus) void
+        +getObserverId() String
+    }
+
+    class OrderLifecycleManager {
+        -observers: List~OrderObserver~
+        +attach(observer: OrderObserver) void
+        +detach(observer: OrderObserver) void
+        +notifyObservers(order: FoodOrder, previousStatus: OrderStatus) void
+        +transitionOrderStatus(order: FoodOrder, newStatus: OrderStatus) void
+        +getObserverCount() int
+    }
+
+    class CustomerAppNotifier {
+        -notificationsSent: int
+        +onOrderStatusChanged(order: FoodOrder, previousStatus: OrderStatus) void
+        +getObserverId() String
+        +getNotificationsSent() int
+    }
+
+    class KitchenDisplaySystem {
+        -ticketCount: int
+        +onOrderStatusChanged(order: FoodOrder, previousStatus: OrderStatus) void
+        +getObserverId() String
+        +getTicketCount() int
+    }
+
+    class DeliveryDispatchCoordinator {
+        -dispatchesInitiated: int
+        +onOrderStatusChanged(order: FoodOrder, previousStatus: OrderStatus) void
+        +getObserverId() String
+        +getDispatchesInitiated() int
+    }
+
+    class FoodOrder {
+        -orderId: String
+        -customerName: String
+        -customerPhone: String
+        -restaurantName: String
+        -itemsDescription: String
+        -totalAmount: double
+        -status: OrderStatus
+        +getOrderId() String
+        +getStatus() OrderStatus
+        +setStatus(status: OrderStatus) void
+    }
+
+    class OrderStatus {
+        <<enumeration>>
+        PLACED
+        PREPARING
+        OUT_FOR_DELIVERY
+        DELIVERED
+        CANCELLED
+    }
+
+    class FoodDeliveryDemo {
+        +main(args: String[]) void
+    }
+
+    %% Relationships
+    OrderSubject <|.. OrderLifecycleManager : implements Subject
+    OrderObserver <|.. CustomerAppNotifier : implements Observer
+    OrderObserver <|.. KitchenDisplaySystem : implements Observer
+    OrderObserver <|.. DeliveryDispatchCoordinator : implements Observer
+
+    OrderLifecycleManager o--> OrderObserver : maintains collection of
+    OrderLifecycleManager ..> FoodOrder : transitions state of
+    OrderObserver ..> FoodOrder : receives state payload
+    FoodOrder --> OrderStatus : has state

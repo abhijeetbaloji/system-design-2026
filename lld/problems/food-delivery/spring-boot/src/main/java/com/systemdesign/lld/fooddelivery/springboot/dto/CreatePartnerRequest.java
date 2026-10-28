@@ -1,6 +1,5 @@
 package com.systemdesign.lld.fooddelivery.springboot.dto;
 
-import com.systemdesign.lld.fooddelivery.springboot.domain.PartnerStatus;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;

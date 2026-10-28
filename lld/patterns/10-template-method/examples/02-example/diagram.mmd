@@ -1,0 +1,36 @@
+classDiagram
+    class DataImportPipeline {
+        <<abstract>>
+        -List~UserRecord~ databaseTable
+        -List~String~ lifecycleAudit
+        -boolean resourceClosed
+        +executeImport(String rawContent) int
+        #parseRecords(String rawContent)* List~UserRecord~
+        -validateRecords(List~UserRecord~ records) List~UserRecord~
+        -persistRecords(List~UserRecord~ records) void
+        -cleanupResources() void
+        #onImportCompleted(List~UserRecord~ records) void
+        +getDatabaseTable() List~UserRecord~
+        +isResourceClosed() boolean
+    }
+
+    class CsvDataImporter {
+        #parseRecords(String rawContent) List~UserRecord~
+    }
+
+    class JsonDataImporter {
+        -boolean postHookTriggered
+        #parseRecords(String rawContent) List~UserRecord~
+        #onImportCompleted(List~UserRecord~ records) void
+    }
+
+    class UserRecord {
+        <<record>>
+        +String id
+        +String name
+        +String email
+    }
+
+    DataImportPipeline <|-- CsvDataImporter : extends
+    DataImportPipeline <|-- JsonDataImporter : extends
+    DataImportPipeline ..> UserRecord : manages

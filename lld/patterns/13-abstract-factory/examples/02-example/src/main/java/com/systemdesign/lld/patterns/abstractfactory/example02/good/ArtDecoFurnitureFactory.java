@@ -1,0 +1,24 @@
+package com.systemdesign.lld.patterns.abstractfactory.example02.good;
+
+public class ArtDecoFurnitureFactory implements FurnitureFactory {
+
+    @Override
+    public Chair createChair() {
+        return new ArtDecoChair();
+    }
+
+    @Override
+    public Sofa createSofa() {
+        return new ArtDecoSofa();
+    }
+
+    @Override
+    public CoffeeTable createCoffeeTable() {
+        return new ArtDecoCoffeeTable();
+    }
+
+    @Override
+    public String getStyleName() {
+        return "Art Deco";
+    }
+}

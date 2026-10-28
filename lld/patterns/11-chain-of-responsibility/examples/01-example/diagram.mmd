@@ -1,0 +1,66 @@
+classDiagram
+    class SupportHandler {
+        <<abstract>>
+        -SupportHandler nextHandler
+        +setNext(SupportHandler next) SupportHandler
+        +handle(SupportTicket ticket)* TicketResolution
+        #handleNext(SupportTicket ticket) TicketResolution
+        +getNextHandler() SupportHandler
+    }
+
+    class AutomatedBotHandler {
+        +handle(SupportTicket ticket) TicketResolution
+    }
+
+    class Tier1SupportHandler {
+        +handle(SupportTicket ticket) TicketResolution
+    }
+
+    class Tier2SpecialistHandler {
+        +handle(SupportTicket ticket) TicketResolution
+    }
+
+    class ExecutiveEscalationHandler {
+        +handle(SupportTicket ticket) TicketResolution
+    }
+
+    class SupportTicketService {
+        -SupportHandler chainHead
+        +submitTicket(SupportTicket ticket) TicketResolution
+    }
+
+    class SupportTicket {
+        <<record>>
+        +String ticketId
+        +String customer
+        +Priority priority
+        +String message
+    }
+
+    class TicketResolution {
+        <<record>>
+        +String ticketId
+        +boolean resolved
+        +String handlerName
+        +String resolutionNotes
+        +int escalationTier
+    }
+
+    class Priority {
+        <<enumeration>>
+        LOW
+        MEDIUM
+        HIGH
+        CRITICAL
+    }
+
+    SupportHandler <|-- AutomatedBotHandler : extends
+    SupportHandler <|-- Tier1SupportHandler : extends
+    SupportHandler <|-- Tier2SpecialistHandler : extends
+    SupportHandler <|-- ExecutiveEscalationHandler : extends
+    SupportHandler --> SupportHandler : nextHandler (successor link)
+
+    SupportTicketService --> SupportHandler : sends to chain head
+    SupportHandler ..> SupportTicket : evaluates
+    SupportHandler ..> TicketResolution : produces
+    SupportTicket --> Priority : has

@@ -1,0 +1,66 @@
+classDiagram
+    direction TB
+
+    class PaymentStrategy {
+        <<interface>>
+        +processPayment(BigDecimal amount) PaymentResult
+    }
+
+    class CreditCardPaymentStrategy {
+        -String cardNumber
+        -String cardHolderName
+        -String cvv
+        -String expiryDate
+        -BigDecimal processingFeePercentage
+        +CreditCardPaymentStrategy(String cardNumber, String cardHolderName, String cvv, String expiryDate)
+        +processPayment(BigDecimal amount) PaymentResult
+        +getMaskedCardNumber() String
+    }
+
+    class PayPalPaymentStrategy {
+        -String accountEmail
+        -String authToken
+        +PayPalPaymentStrategy(String accountEmail, String authToken)
+        +processPayment(BigDecimal amount) PaymentResult
+    }
+
+    class UpiPaymentStrategy {
+        -String upiId
+        -String mpin
+        +UpiPaymentStrategy(String upiId, String mpin)
+        +processPayment(BigDecimal amount) PaymentResult
+    }
+
+    class CryptoPaymentStrategy {
+        -String walletAddress
+        -String networkName
+        -BigDecimal estimatedGasFee
+        +CryptoPaymentStrategy(String walletAddress)
+        +processPayment(BigDecimal amount) PaymentResult
+    }
+
+    class PaymentContext {
+        -PaymentStrategy paymentStrategy
+        +PaymentContext(PaymentStrategy paymentStrategy)
+        +getPaymentStrategy() PaymentStrategy
+        +setPaymentStrategy(PaymentStrategy paymentStrategy) void
+        +pay(BigDecimal amount) PaymentResult
+    }
+
+    class PaymentResult {
+        <<record>>
+        +boolean successful
+        +String transactionId
+        +BigDecimal amount
+        +BigDecimal fee
+        +String message
+        +Instant timestamp
+    }
+
+    PaymentStrategy <|.. CreditCardPaymentStrategy : implements
+    PaymentStrategy <|.. PayPalPaymentStrategy : implements
+    PaymentStrategy <|.. UpiPaymentStrategy : implements
+    PaymentStrategy <|.. CryptoPaymentStrategy : implements
+
+    PaymentContext o--> PaymentStrategy : delegates to
+    PaymentStrategy ..> PaymentResult : returns

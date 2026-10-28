@@ -1,0 +1,75 @@
+classDiagram
+    class GamePrototype~T~ {
+        <<interface>>
+        +clone() T
+    }
+
+    class Item {
+        -String name
+        -int attackBonus
+        -int defenseBonus
+        -int durability
+        +Item(String name, int attackBonus, int defenseBonus, int durability)
+        +Item(Item source)
+        +clone() Item
+        +takeDamage(int amount) void
+        +getName() String
+        +getAttackBonus() int
+        +getDefenseBonus() int
+        +getDurability() int
+    }
+
+    class GameCharacter {
+        <<abstract>>
+        #String name
+        #int health
+        #int mana
+        #int level
+        #List~Item~ equipment
+        #List~String~ abilities
+        #GameCharacter(String name, int health, int mana, int level)
+        #GameCharacter(GameCharacter source)
+        +clone()* GameCharacter
+        +equip(Item item) void
+        +learnAbility(String ability) void
+        +calculateTotalAttack() int
+        +calculateTotalDefense() int
+        +getEquipment() List~Item~
+        +getAbilities() List~String~
+        +getName() String
+        +setName(String name) void
+    }
+
+    class Warrior {
+        -int armorRating
+        -int ragePoints
+        +Warrior(String name, int health, int level, int armorRating)
+        #Warrior(Warrior source)
+        +clone() Warrior
+        +getArmorRating() int
+        +getRagePoints() int
+    }
+
+    class Mage {
+        -int spellPower
+        -int manaShield
+        +Mage(String name, int health, int mana, int level, int spellPower)
+        #Mage(Mage source)
+        +clone() Mage
+        +getSpellPower() int
+        +getManaShield() int
+    }
+
+    class CharacterSpawnerRegistry {
+        -Map~String, GameCharacter~ archetypes
+        +registerArchetype(String key, GameCharacter archetype) void
+        +spawn(String key) GameCharacter
+        +hasArchetype(String key) boolean
+    }
+
+    GamePrototype <|.. GameCharacter : implements
+    GamePrototype <|.. Item : implements
+    GameCharacter <|-- Warrior : extends
+    GameCharacter <|-- Mage : extends
+    GameCharacter o-- Item : contains equipment (deep copy)
+    CharacterSpawnerRegistry o-- GameCharacter : caches archetypes

@@ -1,0 +1,59 @@
+classDiagram
+    class RequestValidator {
+        <<abstract>>
+        -RequestValidator nextValidator
+        +setNext(RequestValidator next) RequestValidator
+        +validate(HttpRequest request)* ValidationResult
+        #validateNext(HttpRequest request) ValidationResult
+        +getNextValidator() RequestValidator
+    }
+
+    class IpRateLimitValidator {
+        -int maxRequestsPerIp
+        -Map~String,Integer~ ipCounts
+        +validate(HttpRequest request) ValidationResult
+    }
+
+    class AuthenticationValidator {
+        +validate(HttpRequest request) ValidationResult
+    }
+
+    class RoleAuthorizationValidator {
+        +validate(HttpRequest request) ValidationResult
+    }
+
+    class PayloadSanitizationValidator {
+        +validate(HttpRequest request) ValidationResult
+    }
+
+    class ApiGateway {
+        -RequestValidator chainHead
+        +handleRequest(HttpRequest request) ValidationResult
+    }
+
+    class HttpRequest {
+        <<record>>
+        +String path
+        +String ipAddress
+        +String authToken
+        +String payloadBody
+        +String userRole
+    }
+
+    class ValidationResult {
+        <<record>>
+        +boolean valid
+        +String validatorName
+        +String message
+        +int httpStatusCode
+    }
+
+    RequestValidator <|-- IpRateLimitValidator : extends
+    RequestValidator <|-- AuthenticationValidator : extends
+    RequestValidator <|-- RoleAuthorizationValidator : extends
+    RequestValidator <|-- PayloadSanitizationValidator : extends
+    RequestValidator --> RequestValidator : nextValidator
+
+    ApiGateway --> RequestValidator : delegates to chainHead
+    RequestValidator ..> HttpRequest : inspects
+    RequestValidator ..> ValidationResult : produces

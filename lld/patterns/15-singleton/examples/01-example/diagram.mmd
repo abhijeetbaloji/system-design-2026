@@ -1,0 +1,45 @@
+classDiagram
+    class ConfigurationService {
+        <<interface>>
+        +getString(String key) String
+        +getString(String key, String defaultVal) String
+        +getInt(String key, int defaultVal) int
+        +getBoolean(String key, boolean defaultVal) boolean
+        +setProperty(String key, String value) void
+        +contains(String key) boolean
+    }
+
+    class AppConfigSingleton {
+        -Map~String, String~ properties
+        -AppConfigSingleton()
+        +getInstance()$ AppConfigSingleton
+        +getString(String key) String
+        +getString(String key, String defaultVal) String
+        +getInt(String key, int defaultVal) int
+        +getBoolean(String key, boolean defaultVal) boolean
+        +setProperty(String key, String value) void
+        +contains(String key) boolean
+        +resetForTesting()$ void
+        #readResolve() Object
+    }
+
+    class Holder {
+        -AppConfigSingleton INSTANCE$
+    }
+
+    class OrderService {
+        -ConfigurationService config
+        +OrderService(ConfigurationService config)
+        +getMaxOrderLimit() int
+    }
+
+    class PaymentService {
+        -ConfigurationService config
+        +PaymentService(ConfigurationService config)
+        +getPaymentGatewayUrl() String
+    }
+
+    ConfigurationService <|.. AppConfigSingleton : implements
+    AppConfigSingleton +-- Holder : inner holder
+    OrderService --> ConfigurationService : depends on
+    PaymentService --> ConfigurationService : depends on

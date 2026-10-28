@@ -1,0 +1,75 @@
+classDiagram
+    direction TB
+
+    class Channel {
+        <<interface>>
+        +subscribe(subscriber: Subscriber) void
+        +unsubscribe(subscriber: Subscriber) void
+        +notifySubscribers(video: Video) void
+        +getSubscriberCount() int
+    }
+
+    class Subscriber {
+        <<interface>>
+        +onNewVideoUploaded(channelName: String, video: Video) void
+        +getSubscriberId() String
+    }
+
+    class YouTubeChannel {
+        -channelName: String
+        -subscribers: List~Subscriber~
+        -uploadedVideos: List~Video~
+        +subscribe(subscriber: Subscriber) void
+        +unsubscribe(subscriber: Subscriber) void
+        +notifySubscribers(video: Video) void
+        +uploadVideo(video: Video) void
+        +getSubscriberCount() int
+    }
+
+    class UserSubscriber {
+        -username: String
+        -notificationCount: int
+        +onNewVideoUploaded(channelName: String, video: Video) void
+        +getSubscriberId() String
+        +getNotificationCount() int
+    }
+
+    class EmailSubscriber {
+        -emailAddress: String
+        -emailsSent: int
+        +onNewVideoUploaded(channelName: String, video: Video) void
+        +getSubscriberId() String
+        +getEmailsSent() int
+    }
+
+    class AnalyticsSubscriber {
+        -analyticsEngineId: String
+        -trackedUploads: int
+        +onNewVideoUploaded(channelName: String, video: Video) void
+        +getSubscriberId() String
+        +getTrackedUploads() int
+    }
+
+    class Video {
+        <<record>>
+        +videoId() String
+        +title() String
+        +durationMinutes() int
+    }
+
+    class YouTubeDemo {
+        +main(args: String[]) void
+    }
+
+    %% Relationships
+    Channel <|.. YouTubeChannel : implements Subject
+    Subscriber <|.. UserSubscriber : implements Observer
+    Subscriber <|.. EmailSubscriber : implements Observer
+    Subscriber <|.. AnalyticsSubscriber : implements Observer
+
+    YouTubeChannel o--> Subscriber : maintains collection of
+    YouTubeChannel ..> Video : broadcasts payload
+    Subscriber ..> Video : consumes payload
+
+    YouTubeDemo ..> Channel : interacts via Subject interface
+    YouTubeDemo ..> Subscriber : instantiates observers

@@ -1,0 +1,140 @@
+classDiagram
+    class DatabaseProviderFactory {
+        <<interface>>
+        +createConnection() DbConnection
+        +createCommand() DbCommand
+        +createTransaction() DbTransaction
+        +getProviderName() String
+    }
+
+    class MySqlProviderFactory {
+        +createConnection() DbConnection
+        +createCommand() DbCommand
+        +createTransaction() DbTransaction
+        +getProviderName() String
+    }
+
+    class PostgreSqlProviderFactory {
+        +createConnection() DbConnection
+        +createCommand() DbCommand
+        +createTransaction() DbTransaction
+        +getProviderName() String
+    }
+
+    class OracleProviderFactory {
+        +createConnection() DbConnection
+        +createCommand() DbCommand
+        +createTransaction() DbTransaction
+        +getProviderName() String
+    }
+
+    class DbConnection {
+        <<interface>>
+        +connect(String connStr) boolean
+        +disconnect() void
+        +isConnected() boolean
+        +getDatabaseType() String
+    }
+
+    class DbCommand {
+        <<interface>>
+        +execute(String sql) String
+        +getParameterPlaceholder(int index) String
+        +getDatabaseType() String
+    }
+
+    class DbTransaction {
+        <<interface>>
+        +begin() void
+        +commit() void
+        +rollback() void
+        +isActive() boolean
+        +getDatabaseType() String
+    }
+
+    class MySqlConnection {
+        +connect(String connStr) boolean
+        +disconnect() void
+        +isConnected() boolean
+        +getDatabaseType() String
+    }
+    class MySqlCommand {
+        +execute(String sql) String
+        +getParameterPlaceholder(int index) String
+        +getDatabaseType() String
+    }
+    class MySqlTransaction {
+        +begin() void
+        +commit() void
+        +rollback() void
+        +isActive() boolean
+        +getDatabaseType() String
+    }
+
+    class PostgreSqlConnection {
+        +connect(String connStr) boolean
+        +disconnect() void
+        +isConnected() boolean
+        +getDatabaseType() String
+    }
+    class PostgreSqlCommand {
+        +execute(String sql) String
+        +getParameterPlaceholder(int index) String
+        +getDatabaseType() String
+    }
+    class PostgreSqlTransaction {
+        +begin() void
+        +commit() void
+        +rollback() void
+        +isActive() boolean
+        +getDatabaseType() String
+    }
+
+    class OracleConnection {
+        +connect(String connStr) boolean
+        +disconnect() void
+        +isConnected() boolean
+        +getDatabaseType() String
+    }
+    class OracleCommand {
+        +execute(String sql) String
+        +getParameterPlaceholder(int index) String
+        +getDatabaseType() String
+    }
+    class OracleTransaction {
+        +begin() void
+        +commit() void
+        +rollback() void
+        +isActive() boolean
+        +getDatabaseType() String
+    }
+
+    class DatabaseRepository {
+        -DbConnection connection
+        -DbCommand command
+        -DbTransaction transaction
+        +DatabaseRepository(DatabaseProviderFactory factory)
+        +executeTransactionalQuery(String connStr, String query) String
+        +isConsistent() boolean
+    }
+
+    DatabaseProviderFactory <|.. MySqlProviderFactory : implements
+    DatabaseProviderFactory <|.. PostgreSqlProviderFactory : implements
+    DatabaseProviderFactory <|.. OracleProviderFactory : implements
+
+    DbConnection <|.. MySqlConnection : implements
+    DbConnection <|.. PostgreSqlConnection : implements
+    DbConnection <|.. OracleConnection : implements
+
+    DbCommand <|.. MySqlCommand : implements
+    DbCommand <|.. PostgreSqlCommand : implements
+    DbCommand <|.. OracleCommand : implements
+
+    DbTransaction <|.. MySqlTransaction : implements
+    DbTransaction <|.. PostgreSqlTransaction : implements
+    DbTransaction <|.. OracleTransaction : implements
+
+    DatabaseRepository --> DatabaseProviderFactory : depends on
+    DatabaseRepository --> DbConnection : uses
+    DatabaseRepository --> DbCommand : uses
+    DatabaseRepository --> DbTransaction : uses

@@ -1,0 +1,95 @@
+classDiagram
+    direction TB
+
+    class OrderState {
+        <<interface>>
+        +addItem(Order order, String itemName, double price) void
+        +pay(Order order, String paymentTxId) void
+        +ship(Order order, String trackingNumber) void
+        +deliver(Order order) void
+        +cancel(Order order, String reason) void
+        +refund(Order order) void
+        +getStateName() String
+    }
+
+    class CreatedOrderState {
+        +addItem(Order order, String itemName, double price) void
+        +pay(Order order, String paymentTxId) void
+        +ship(Order order, String trackingNumber) void
+        +deliver(Order order) void
+        +cancel(Order order, String reason) void
+        +refund(Order order) void
+        +getStateName() String
+    }
+
+    class PaidOrderState {
+        +addItem(Order order, String itemName, double price) void
+        +pay(Order order, String paymentTxId) void
+        +ship(Order order, String trackingNumber) void
+        +deliver(Order order) void
+        +cancel(Order order, String reason) void
+        +refund(Order order) void
+        +getStateName() String
+    }
+
+    class ShippedOrderState {
+        +addItem(Order order, String itemName, double price) void
+        +pay(Order order, String paymentTxId) void
+        +ship(Order order, String trackingNumber) void
+        +deliver(Order order) void
+        +cancel(Order order, String reason) void
+        +refund(Order order) void
+        +getStateName() String
+    }
+
+    class DeliveredOrderState {
+        +addItem(Order order, String itemName, double price) void
+        +pay(Order order, String paymentTxId) void
+        +ship(Order order, String trackingNumber) void
+        +deliver(Order order) void
+        +cancel(Order order, String reason) void
+        +refund(Order order) void
+        +getStateName() String
+    }
+
+    class CancelledOrderState {
+        +addItem(Order order, String itemName, double price) void
+        +pay(Order order, String paymentTxId) void
+        +ship(Order order, String trackingNumber) void
+        +deliver(Order order) void
+        +cancel(Order order, String reason) void
+        +refund(Order order) void
+        +getStateName() String
+    }
+
+    class Order {
+        -String orderId
+        -List~String~ items
+        -double totalAmount
+        -String paymentTransactionId
+        -String trackingNumber
+        -String cancellationReason
+        -OrderState currentState
+        +Order(String orderId)
+        +addItem(String itemName, double price) void
+        +pay(String paymentTxId) void
+        +ship(String trackingNumber) void
+        +deliver() void
+        +cancel(String reason) void
+        +refund() void
+        +setState(OrderState state) void
+        +getCurrentState() OrderState
+        +getTotalAmount() double
+    }
+
+    OrderState <|.. CreatedOrderState : implements
+    OrderState <|.. PaidOrderState : implements
+    OrderState <|.. ShippedOrderState : implements
+    OrderState <|.. DeliveredOrderState : implements
+    OrderState <|.. CancelledOrderState : implements
+
+    Order o--> OrderState : delegates to currentState
+    CreatedOrderState ..> Order : transitions
+    PaidOrderState ..> Order : transitions
+    ShippedOrderState ..> Order : transitions
+    DeliveredOrderState ..> Order : transitions

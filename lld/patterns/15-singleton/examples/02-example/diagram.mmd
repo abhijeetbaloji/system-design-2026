@@ -1,0 +1,65 @@
+classDiagram
+    class LoggerService {
+        <<interface>>
+        +debug(String msg) void
+        +info(String msg) void
+        +warn(String msg) void
+        +error(String msg) void
+        +getLogs() List~LogRecord~
+        +setLogLevel(LogLevel level) void
+        +getLogLevel() LogLevel
+    }
+
+    class ProcessLoggerSingleton {
+        -ProcessLoggerSingleton instance$
+        -LogLevel currentLevel
+        -List~LogRecord~ logBuffer
+        -ProcessLoggerSingleton()
+        +getInstance()$ ProcessLoggerSingleton
+        +debug(String msg) void
+        +info(String msg) void
+        +warn(String msg) void
+        +error(String msg) void
+        +getLogs() List~LogRecord~
+        +setLogLevel(LogLevel level) void
+        +getLogLevel() LogLevel
+        +clearLogs() void
+    }
+
+    class LogRecord {
+        -LogLevel level
+        -String message
+        -long timestamp
+        -String threadName
+        +getLevel() LogLevel
+        +getMessage() String
+        +getTimestamp() long
+        +getThreadName() String
+        +format() String
+    }
+
+    class LogLevel {
+        <<enumeration>>
+        DEBUG
+        INFO
+        WARN
+        ERROR
+    }
+
+    class AuthService {
+        -LoggerService logger
+        +AuthService(LoggerService logger)
+        +login(String user) void
+    }
+
+    class PaymentService {
+        -LoggerService logger
+        +PaymentService(LoggerService logger)
+        +charge(double amount) void
+    }
+
+    LoggerService <|.. ProcessLoggerSingleton : implements
+    ProcessLoggerSingleton o--> LogRecord : buffers
+    LogRecord --> LogLevel : has
+    AuthService --> LoggerService : uses
+    PaymentService --> LoggerService : uses

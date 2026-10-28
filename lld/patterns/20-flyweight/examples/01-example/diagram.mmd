@@ -1,0 +1,42 @@
+classDiagram
+    class TreeType {
+        -String name
+        -String color
+        -byte[] textureData
+        +TreeType(String name, String color, byte[] textureData)
+        +render(int x, int y, StringBuilder canvas) void
+        +getName() String
+        +getColor() String
+        +getTextureSize() int
+    }
+
+    class TreeTypeFactory {
+        -Map~String, TreeType~ treeTypes
+        +getTreeType(String name, String color, byte[] textureData) TreeType
+        +getTypeCount() int
+    }
+
+    class Tree {
+        -int x
+        -int y
+        -TreeType type
+        +Tree(int x, int y, TreeType type)
+        +draw(StringBuilder canvas) void
+        +getX() int
+        +getY() int
+        +getType() TreeType
+    }
+
+    class Forest {
+        -List~Tree~ trees
+        -TreeTypeFactory factory
+        +plantTree(int x, int y, String name, String color, byte[] textureData) Tree
+        +render(StringBuilder canvas) void
+        +getTrees() List~Tree~
+        +getUniqueTypeCount() int
+    }
+
+    Tree o-- TreeType : references flyweight (intrinsic)
+    TreeTypeFactory o-- TreeType : caches flyweights
+    Forest o-- Tree : contains contexts (extrinsic)
+    Forest o-- TreeTypeFactory : uses

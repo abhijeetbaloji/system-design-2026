@@ -1,0 +1,85 @@
+classDiagram
+    direction TB
+
+    class Transport {
+        <<interface>>
+        +deliver(cargo: Cargo, distanceKm: double) DeliveryReceipt
+        +canHandle(cargo: Cargo) boolean
+        +calculateCost(cargo: Cargo, distanceKm: double) double
+        +getTransportMode() String
+    }
+
+    class Truck {
+        -licensePlate: String
+        -maxPayloadKg: double
+        +deliver(cargo: Cargo, distanceKm: double) DeliveryReceipt
+        +canHandle(cargo: Cargo) boolean
+        +calculateCost(cargo: Cargo, distanceKm: double) double
+        +getTransportMode() String
+    }
+
+    class Ship {
+        -vesselName: String
+        -imoNumber: String
+        -maxPayloadKg: double
+        +deliver(cargo: Cargo, distanceKm: double) DeliveryReceipt
+        +canHandle(cargo: Cargo) boolean
+        +calculateCost(cargo: Cargo, distanceKm: double) double
+        +getTransportMode() String
+    }
+
+    class Logistics {
+        <<abstract>>
+        +planDelivery(cargo: Cargo, distanceKm: double) DeliveryReceipt
+        -recordShipmentLedger(receipt: DeliveryReceipt) void
+        #createTransport()* Transport
+    }
+
+    class RoadLogistics {
+        -licensePlate: String
+        -maxPayloadKg: double
+        #createTransport() Transport
+    }
+
+    class SeaLogistics {
+        -vesselName: String
+        -imoNumber: String
+        -maxPayloadKg: double
+        #createTransport() Transport
+    }
+
+    class Cargo {
+        <<record>>
+        +trackingId() String
+        +description() String
+        +weightKg() double
+    }
+
+    class DeliveryReceipt {
+        <<record>>
+        +trackingId() String
+        +transportMode() String
+        +vehicleIdentifier() String
+        +freightCost() double
+        +confirmationStatus() String
+    }
+
+    class LogisticsDemo {
+        +main(args: String[]) void
+    }
+
+    %% Relationships
+    Transport <|.. Truck : implements
+    Transport <|.. Ship : implements
+
+    Logistics <|-- RoadLogistics : extends
+    Logistics <|-- SeaLogistics : extends
+
+    Logistics ..> Transport : depends on abstraction
+    Logistics ..> Cargo : validates & processes
+    Logistics ..> DeliveryReceipt : produces
+
+    RoadLogistics ..> Truck : instantiates via createTransport()
+    SeaLogistics ..> Ship : instantiates via createTransport()
+
+    LogisticsDemo ..> Logistics : interacts via Creator

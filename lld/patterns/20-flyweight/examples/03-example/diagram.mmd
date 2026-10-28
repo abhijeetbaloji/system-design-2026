@@ -1,0 +1,55 @@
+classDiagram
+    class PointOfInterestType {
+        -String category
+        -String pinColor
+        -byte[] iconData
+        -int iconWidth
+        -int iconHeight
+        -String zIndexLayer
+        +render(double lat, double lon, String title, MapCanvas canvas)
+        +estimateMemoryBytes() long
+    }
+
+    class PoiTypeFactory {
+        -Map~String, PointOfInterestType~ CACHE$
+        +getPoiType(category, pinColor, iconData, w, h, layer)$ PointOfInterestType
+        +getStandardType(StandardPoiCategory category)$ PointOfInterestType
+        +getCachedTypeCount()$ int
+        +clearCache()$ void
+    }
+
+    class MapMarker {
+        -double latitude
+        -double longitude
+        -String title
+        -PointOfInterestType poiType
+        +render(MapCanvas canvas)
+        +estimateExtrinsicMemoryBytes() long
+    }
+
+    class GeospatialMap {
+        -List~MapMarker~ markers
+        +addMarker(double lat, double lon, String title, PointOfInterestType type)
+        +findMarkersInBoundingBox(minLat, maxLat, minLon, maxLon) List~MapMarker~
+        +renderVisible(MapCanvas canvas, minLat, maxLat, minLon, maxLon)
+        +renderAll(MapCanvas canvas)
+        +calculateTotalMemoryBytes() long
+    }
+
+    class MapCanvas {
+        -List~String~ drawCommands
+        +drawMarker(double lat, double lon, String layer, String payload)
+        +getDrawCommands() List~String~
+    }
+
+    class MapRenderingService {
+        +createDenseUrbanMap(int markerCount) GeospatialMap
+        +renderViewport(GeospatialMap map, minLat, maxLat, minLon, maxLon) List~String~
+    }
+
+    PoiTypeFactory ..> PointOfInterestType : creates and caches
+    MapMarker --> PointOfInterestType : references flyweight (intrinsic)
+    GeospatialMap o--> MapMarker : aggregates (extrinsic)
+    MapMarker ..> MapCanvas : draws on
+    MapRenderingService ..> GeospatialMap : operates on
+    MapRenderingService ..> PoiTypeFactory : requests flyweights

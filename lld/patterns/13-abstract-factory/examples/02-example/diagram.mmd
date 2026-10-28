@@ -1,0 +1,127 @@
+classDiagram
+    class FurnitureFactory {
+        <<interface>>
+        +createChair() Chair
+        +createSofa() Sofa
+        +createCoffeeTable() CoffeeTable
+    }
+
+    class ModernFurnitureFactory {
+        +createChair() Chair
+        +createSofa() Sofa
+        +createCoffeeTable() CoffeeTable
+    }
+
+    class VictorianFurnitureFactory {
+        +createChair() Chair
+        +createSofa() Sofa
+        +createCoffeeTable() CoffeeTable
+    }
+
+    class ArtDecoFurnitureFactory {
+        +createChair() Chair
+        +createSofa() Sofa
+        +createCoffeeTable() CoffeeTable
+    }
+
+    class Chair {
+        <<interface>>
+        +sitOn() String
+        +hasLegs() boolean
+        +getStyle() String
+    }
+
+    class Sofa {
+        <<interface>>
+        +layOn() String
+        +getCapacity() int
+        +getStyle() String
+    }
+
+    class CoffeeTable {
+        <<interface>>
+        +placeItem(String item) String
+        +getStyle() String
+    }
+
+    class ModernChair {
+        +sitOn() String
+        +hasLegs() boolean
+        +getStyle() String
+    }
+    class ModernSofa {
+        +layOn() String
+        +getCapacity() int
+        +getStyle() String
+    }
+    class ModernCoffeeTable {
+        +placeItem(String item) String
+        +getStyle() String
+    }
+
+    class VictorianChair {
+        +sitOn() String
+        +hasLegs() boolean
+        +getStyle() String
+    }
+    class VictorianSofa {
+        +layOn() String
+        +getCapacity() int
+        +getStyle() String
+    }
+    class VictorianCoffeeTable {
+        +placeItem(String item) String
+        +getStyle() String
+    }
+
+    class ArtDecoChair {
+        +sitOn() String
+        +hasLegs() boolean
+        +getStyle() String
+    }
+    class ArtDecoSofa {
+        +layOn() String
+        +getCapacity() int
+        +getStyle() String
+    }
+    class ArtDecoCoffeeTable {
+        +placeItem(String item) String
+        +getStyle() String
+    }
+
+    class LivingRoomSuite {
+        -Chair chair
+        -Sofa sofa
+        -CoffeeTable coffeeTable
+        +LivingRoomSuite(FurnitureFactory factory)
+        +describeSuite() String
+        +isHarmonious() boolean
+        +getChair() Chair
+        +getSofa() Sofa
+        +getCoffeeTable() CoffeeTable
+    }
+
+    FurnitureFactory <|.. ModernFurnitureFactory : implements
+    FurnitureFactory <|.. VictorianFurnitureFactory : implements
+    FurnitureFactory <|.. ArtDecoFurnitureFactory : implements
+
+    Chair <|.. ModernChair : implements
+    Chair <|.. VictorianChair : implements
+    Chair <|.. ArtDecoChair : implements
+
+    Sofa <|.. ModernSofa : implements
+    Sofa <|.. VictorianSofa : implements
+    Sofa <|.. ArtDecoSofa : implements
+
+    CoffeeTable <|.. ModernCoffeeTable : implements
+    CoffeeTable <|.. VictorianCoffeeTable : implements
+    CoffeeTable <|.. ArtDecoCoffeeTable : implements
+
+    ModernFurnitureFactory ..> ModernChair : creates
+    ModernFurnitureFactory ..> ModernSofa : creates
+    ModernFurnitureFactory ..> ModernCoffeeTable : creates
+
+    LivingRoomSuite --> FurnitureFactory : depends on
+    LivingRoomSuite --> Chair : uses
+    LivingRoomSuite --> Sofa : uses
+    LivingRoomSuite --> CoffeeTable : uses

@@ -1,0 +1,86 @@
+classDiagram
+    direction TB
+
+    class Exporter {
+        <<interface>>
+        +render(report: ReportData) byte[]
+        +getFileExtension() String
+        +getMimeType() String
+        +getFormatName() String
+    }
+
+    class PdfExporter {
+        -pageSize: String
+        -encryptDocument: boolean
+        +render(report: ReportData) byte[]
+        +getFileExtension() String
+        +getMimeType() String
+        +getFormatName() String
+    }
+
+    class HtmlExporter {
+        -theme: String
+        -includeInlineCss: boolean
+        +render(report: ReportData) byte[]
+        +getFileExtension() String
+        +getMimeType() String
+        +getFormatName() String
+    }
+
+    class DocumentExporter {
+        <<abstract>>
+        +exportReport(report: ReportData) ExportResult
+        -computeSha256(data: byte[]) String
+        -recordExportAudit(result: ExportResult) void
+        #createExporter()* Exporter
+    }
+
+    class PdfDocumentExporter {
+        -pageSize: String
+        -encrypt: boolean
+        #createExporter() Exporter
+    }
+
+    class HtmlDocumentExporter {
+        -theme: String
+        -includeInlineCss: boolean
+        #createExporter() Exporter
+    }
+
+    class ReportData {
+        <<record>>
+        +reportId() String
+        +title() String
+        +author() String
+        +sections() List~String~
+    }
+
+    class ExportResult {
+        <<record>>
+        +filename() String
+        +format() String
+        +mimeType() String
+        +byteSize() int
+        +checksumHex() String
+        +rawBytes() byte[]
+    }
+
+    class DocumentExportDemo {
+        +main(args: String[]) void
+    }
+
+    %% Relationships
+    Exporter <|.. PdfExporter : implements
+    Exporter <|.. HtmlExporter : implements
+
+    DocumentExporter <|-- PdfDocumentExporter : extends
+    DocumentExporter <|-- HtmlDocumentExporter : extends
+
+    DocumentExporter ..> Exporter : depends on abstraction
+    DocumentExporter ..> ReportData : consumes
+    DocumentExporter ..> ExportResult : creates
+
+    PdfDocumentExporter ..> PdfExporter : instantiates via createExporter()
+    HtmlDocumentExporter ..> HtmlExporter : instantiates via createExporter()
+
+    DocumentExportDemo ..> DocumentExporter : interacts via Creator

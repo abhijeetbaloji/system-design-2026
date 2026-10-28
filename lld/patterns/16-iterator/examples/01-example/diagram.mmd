@@ -1,0 +1,63 @@
+classDiagram
+    class SongIterator {
+        <<interface>>
+        +hasNext() boolean
+        +next() Song
+        +reset() void
+    }
+
+    class SequentialSongIterator {
+        -List~Song~ songs
+        -int cursor
+        +hasNext() boolean
+        +next() Song
+        +reset() void
+    }
+
+    class ReverseSongIterator {
+        -List~Song~ songs
+        -int cursor
+        +hasNext() boolean
+        +next() Song
+        +reset() void
+    }
+
+    class ShuffleSongIterator {
+        -List~Song~ shuffledSongs
+        -int cursor
+        +hasNext() boolean
+        +next() Song
+        +reset() void
+    }
+
+    class SongPlaylist {
+        -List~Song~ songs
+        -String name
+        +addSong(Song song) void
+        +iterator() SongIterator
+        +reverseIterator() SongIterator
+        +shuffleIterator(long seed) SongIterator
+        +size() int
+        +getName() String
+    }
+
+    class Song {
+        -String title
+        -String artist
+        -int durationSeconds
+        +getTitle() String
+        +getArtist() String
+        +getDurationSeconds() int
+        +format() String
+    }
+
+    class AudioPlayerService {
+        +playAll(SongIterator iterator) List~String~
+    }
+
+    SongIterator <|.. SequentialSongIterator : implements
+    SongIterator <|.. ReverseSongIterator : implements
+    SongIterator <|.. ShuffleSongIterator : implements
+    SongPlaylist ..> SongIterator : produces
+    SongPlaylist o--> Song : contains
+    AudioPlayerService --> SongIterator : uses

@@ -1,0 +1,63 @@
+classDiagram
+    class OrderController {
+        -OrderCheckoutFacade checkoutFacade
+        +handleWebCheckout(CheckoutRequest request) CheckoutResult
+    }
+
+    class OrderCheckoutFacade {
+        -InventoryService inventoryService
+        -PricingService pricingService
+        -PaymentService paymentService
+        -ShippingService shippingService
+        -NotificationService notificationService
+        +checkout(CheckoutRequest request) CheckoutResult
+    }
+
+    class InventoryService {
+        +reserveStock(List~CartItem~ items) boolean
+        +releaseStock(List~CartItem~ items) void
+        +getAvailableStock(String sku) int
+    }
+
+    class PricingService {
+        +calculateTotal(List~CartItem~ items) BigDecimal
+    }
+
+    class PaymentService {
+        +processPayment(String customerId, BigDecimal amount, String paymentToken) boolean
+    }
+
+    class ShippingService {
+        +generateShippingLabel(String customerAddress) String
+    }
+
+    class NotificationService {
+        +sendOrderConfirmation(String email, String orderId, String trackingNumber) void
+    }
+
+    class CheckoutRequest {
+        <<record>>
+        +String customerId
+        +String customerEmail
+        +String shippingAddress
+        +List~CartItem~ items
+        +String paymentToken
+    }
+
+    class CheckoutResult {
+        <<record>>
+        +String orderId
+        +boolean success
+        +String trackingNumber
+        +BigDecimal totalAmount
+        +String message
+    }
+
+    OrderController --> OrderCheckoutFacade : depends on
+    OrderCheckoutFacade --> InventoryService : orchestrates
+    OrderCheckoutFacade --> PricingService : orchestrates
+    OrderCheckoutFacade --> PaymentService : orchestrates
+    OrderCheckoutFacade --> ShippingService : orchestrates
+    OrderCheckoutFacade --> NotificationService : orchestrates
+    OrderCheckoutFacade ..> CheckoutRequest : accepts
+    OrderCheckoutFacade ..> CheckoutResult : returns

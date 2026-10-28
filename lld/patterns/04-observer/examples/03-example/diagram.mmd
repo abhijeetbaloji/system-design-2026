@@ -1,0 +1,81 @@
+classDiagram
+    direction TB
+
+    class StockMarketSubject {
+        <<interface>>
+        +register(observer: StockObserver) void
+        +unregister(observer: StockObserver) void
+        +notifyObservers(tick: StockTick) void
+        +getObserverCount() int
+    }
+
+    class StockObserver {
+        <<interface>>
+        +onPriceUpdate(tick: StockTick, market: StockMarket) void
+        +getObserverId() String
+    }
+
+    class StockMarket {
+        -exchangeName: String
+        -observers: List~StockObserver~
+        -priceHistory: Map~String, List~Double~~
+        -currentPrices: Map~String, Double~
+        +register(observer: StockObserver) void
+        +unregister(observer: StockObserver) void
+        +notifyObservers(tick: StockTick) void
+        +setStockPrice(symbol: String, price: double, volume: long) void
+        +getMovingAverage(symbol: String) double
+        +getDailyHigh(symbol: String) double
+        +getObserverCount() int
+    }
+
+    class LiveTickerDisplay {
+        -widgetId: String
+        -market: StockMarketSubject
+        -tickCount: int
+        -active: boolean
+        +onPriceUpdate(tick: StockTick, market: StockMarket) void
+        +close() void
+        +getTickCount() int
+    }
+
+    class PriceAlertBot {
+        -botName: String
+        -targetSymbol: String
+        -upperThreshold: double
+        -lowerThreshold: double
+        -alertsTriggered: int
+        +onPriceUpdate(tick: StockTick, market: StockMarket) void
+        +getAlertsTriggered() int
+    }
+
+    class TradingAnalyticsLogger {
+        -loggerId: String
+        -calculationsLogged: int
+        +onPriceUpdate(tick: StockTick, market: StockMarket) void
+        +getCalculationsLogged() int
+    }
+
+    class StockTick {
+        <<record>>
+        +symbol() String
+        +price() double
+        +changePercent() double
+        +volume() long
+    }
+
+    class StockMarketDemo {
+        +main(args: String[]) void
+    }
+
+    %% Relationships
+    StockMarketSubject <|.. StockMarket : implements Subject
+    StockObserver <|.. LiveTickerDisplay : implements Observer
+    StockObserver <|.. PriceAlertBot : implements Observer
+    StockObserver <|.. TradingAnalyticsLogger : implements Observer
+
+    StockMarket o--> StockObserver : maintains collection of
+    StockMarket ..> StockTick : broadcasts payload
+    StockObserver ..> StockTick : receives push data
+    TradingAnalyticsLogger ..> StockMarket : pulls moving avg and high
+    LiveTickerDisplay ..> StockMarketSubject : auto-registers and unregisters

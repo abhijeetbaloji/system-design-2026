@@ -1,0 +1,60 @@
+classDiagram
+    class Prototype~T~ {
+        <<interface>>
+        +clone() T
+    }
+
+    class Document {
+        <<abstract>>
+        #String title
+        #String author
+        #Map~String, String~ metadata
+        #Document(String title, String author)
+        #Document(Document source)
+        +clone()* Document
+        +addMetadata(String key, String value) void
+        +getMetadata() Map~String, String~
+        +getTitle() String
+        +getAuthor() String
+    }
+
+    class LineItem {
+        -String description
+        -int quantity
+        -double unitPrice
+        +LineItem(String description, int quantity, double unitPrice)
+        +LineItem(LineItem source)
+        +clone() LineItem
+        +getTotal() double
+        +getDescription() String
+        +getQuantity() int
+        +getUnitPrice() double
+    }
+
+    class InvoiceDocument {
+        -String invoiceNumber
+        -String customerName
+        -double taxRate
+        -List~LineItem~ items
+        +InvoiceDocument(String title, String author, double taxRate)
+        #InvoiceDocument(InvoiceDocument source)
+        +clone() InvoiceDocument
+        +addItem(LineItem item) void
+        +calculateTotal() double
+        +setCustomerName(String customerName) void
+        +setInvoiceNumber(String invoiceNumber) void
+        +getItems() List~LineItem~
+    }
+
+    class DocumentPrototypeRegistry {
+        -Map~String, Document~ prototypes
+        +register(String key, Document prototype) void
+        +get(String key) Document
+        +hasKey(String key) boolean
+    }
+
+    Prototype <|.. Document : implements
+    Prototype <|.. LineItem : implements
+    Document <|-- InvoiceDocument : extends
+    InvoiceDocument o-- LineItem : contains (deep copy)
+    DocumentPrototypeRegistry o-- Document : caches prototypes

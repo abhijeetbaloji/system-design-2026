@@ -1,0 +1,52 @@
+classDiagram
+    class ServiceRegistry {
+        <<interface>>
+        +register(Class~T~ type, T impl) void
+        +resolve(Class~T~ type) Optional~T~
+        +registerNamed(String name, Object impl) void
+        +resolveNamed(String name) Optional~Object~
+        +unregister(Class type) boolean
+        +clear() void
+    }
+
+    class ServiceRegistrySingleton {
+        <<enumeration>>
+        INSTANCE
+        -Map~Class, Object~ typedServices
+        -Map~String, Object~ namedServices
+        +register(Class~T~ type, T impl) void
+        +resolve(Class~T~ type) Optional~T~
+        +registerNamed(String name, Object impl) void
+        +resolveNamed(String name) Optional~Object~
+        +unregister(Class type) boolean
+        +clear() void
+    }
+
+    class PaymentGateway {
+        <<interface>>
+        +process(double amount) String
+    }
+
+    class NotificationGateway {
+        <<interface>>
+        +send(String recipient, String message) void
+    }
+
+    class StripeGateway {
+        +process(double amount) String
+    }
+
+    class SendGridNotification {
+        +send(String recipient, String message) void
+    }
+
+    class CheckoutController {
+        -ServiceRegistry registry
+        +CheckoutController(ServiceRegistry registry)
+        +completeCheckout(double amount, String email) String
+    }
+
+    ServiceRegistry <|.. ServiceRegistrySingleton : implements
+    PaymentGateway <|.. StripeGateway : implements
+    NotificationGateway <|.. SendGridNotification : implements
+    CheckoutController --> ServiceRegistry : resolves services from

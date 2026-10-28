@@ -1,0 +1,41 @@
+classDiagram
+    class AppLogger {
+        <<interface>>
+        +debug(String message) void
+        +info(String message) void
+        +warn(String message) void
+        +error(String message) void
+        +error(String message, Throwable throwable) void
+    }
+
+    class ModernConsoleLogger {
+        +debug(String message) void
+        +info(String message) void
+        +warn(String message) void
+        +error(String message) void
+        +error(String message, Throwable throwable) void
+    }
+
+    class LegacyLoggerAdapter {
+        -LegacyCustomLogger legacyLogger
+        -String defaultTag
+        +debug(String message) void
+        +info(String message) void
+        +warn(String message) void
+        +error(String message) void
+        +error(String message, Throwable throwable) void
+    }
+
+    class LegacyCustomLogger {
+        +writeLog(int severityCode, String payload, String tag) void
+    }
+
+    class UserService {
+        -AppLogger logger
+        +registerUser(String username, String email) boolean
+    }
+
+    AppLogger <|.. ModernConsoleLogger : implements
+    AppLogger <|.. LegacyLoggerAdapter : implements
+    LegacyLoggerAdapter --> LegacyCustomLogger : adapts (composition)
+    UserService --> AppLogger : depends on

@@ -1,0 +1,66 @@
+classDiagram
+    class VideoUploadService {
+        -MediaConverterFacade converterFacade
+        +handleUploadAndTranscode(String originalFileName, String targetFormat) MediaConversionResult
+    }
+
+    class MediaConverterFacade {
+        -CodecFactory codecFactory
+        -BitrateReader bitrateReader
+        -AudioMixer audioMixer
+        +convertMedia(String sourceFileName, String targetFormat) MediaConversionResult
+    }
+
+    class CodecFactory {
+        +extract(VideoFile file) Codec
+        +createCodec(String format) Codec
+    }
+
+    class BitrateReader {
+        +read(VideoFile file, Codec codec) byte[]
+        +convert(byte[] buffer, Codec destinationCodec) byte[]
+    }
+
+    class AudioMixer {
+        +fix(byte[] videoBuffer) byte[]
+    }
+
+    class VideoFile {
+        -String name
+        -String codecType
+        +getName() String
+        +getCodecType() String
+    }
+
+    class Codec {
+        <<interface>>
+        +getType() String
+    }
+
+    class MPEG4CompressionCodec {
+        +getType() String
+    }
+
+    class OggCompressionCodec {
+        +getType() String
+    }
+
+    class MediaConversionResult {
+        <<record>>
+        +String originalFileName
+        +String outputFileName
+        +String targetFormat
+        +byte[] transcodedData
+        +boolean success
+        +String message
+    }
+
+    Codec <|.. MPEG4CompressionCodec : implements
+    Codec <|.. OggCompressionCodec : implements
+
+    VideoUploadService --> MediaConverterFacade : depends on
+    MediaConverterFacade --> CodecFactory : orchestrates
+    MediaConverterFacade --> BitrateReader : orchestrates
+    MediaConverterFacade --> AudioMixer : orchestrates
+    MediaConverterFacade ..> VideoFile : creates & uses
+    MediaConverterFacade ..> MediaConversionResult : returns

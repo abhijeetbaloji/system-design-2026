@@ -1,0 +1,43 @@
+classDiagram
+    class ReportGenerator {
+        <<abstract>>
+        +generateReport(ReportData data) String
+        -validateData(ReportData data) void
+        #formatHeader(String title)* String
+        #formatSummary(Map~String,Object~ metrics)* String
+        #formatRows(List~String~ items)* String
+        #includeFooter() boolean
+        #formatFooter() String
+    }
+
+    class HtmlReportGenerator {
+        #formatHeader(String title) String
+        #formatSummary(Map~String,Object~ metrics) String
+        #formatRows(List~String~ items) String
+        #formatFooter() String
+    }
+
+    class PlainTextReportGenerator {
+        #formatHeader(String title) String
+        #formatSummary(Map~String,Object~ metrics) String
+        #formatRows(List~String~ items) String
+    }
+
+    class CsvReportGenerator {
+        #formatHeader(String title) String
+        #formatSummary(Map~String,Object~ metrics) String
+        #formatRows(List~String~ items) String
+        #includeFooter() boolean
+    }
+
+    class ReportData {
+        <<record>>
+        +String title
+        +Map~String,Object~ metrics
+        +List~String~ items
+    }
+
+    ReportGenerator <|-- HtmlReportGenerator : extends
+    ReportGenerator <|-- PlainTextReportGenerator : extends
+    ReportGenerator <|-- CsvReportGenerator : extends
+    ReportGenerator ..> ReportData : accepts

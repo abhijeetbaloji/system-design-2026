@@ -1,0 +1,83 @@
+classDiagram
+    direction TB
+
+    class DiscountStrategy {
+        <<interface>>
+        +calculateDiscount(Order order) BigDecimal
+    }
+
+    class NoDiscountStrategy {
+        +calculateDiscount(Order order) BigDecimal
+    }
+
+    class FlatDiscountStrategy {
+        -BigDecimal discountAmount
+        -BigDecimal minimumSubtotal
+        +FlatDiscountStrategy(BigDecimal discountAmount, BigDecimal minimumSubtotal)
+        +FlatDiscountStrategy(BigDecimal discountAmount)
+        +calculateDiscount(Order order) BigDecimal
+    }
+
+    class PercentageDiscountStrategy {
+        -BigDecimal percentage
+        -BigDecimal maximumCap
+        +PercentageDiscountStrategy(BigDecimal percentage, BigDecimal maximumCap)
+        +PercentageDiscountStrategy(BigDecimal percentage)
+        +calculateDiscount(Order order) BigDecimal
+    }
+
+    class TieredVolumeDiscountStrategy {
+        -int tier1Threshold
+        -BigDecimal tier1Percentage
+        -int tier2Threshold
+        -BigDecimal tier2Percentage
+        +TieredVolumeDiscountStrategy()
+        +calculateDiscount(Order order) BigDecimal
+    }
+
+    class VipCustomerDiscountStrategy {
+        -BigDecimal vipPercentage
+        -int pointsPerDollar
+        -BigDecimal maxPointsBonus
+        +VipCustomerDiscountStrategy()
+        +calculateDiscount(Order order) BigDecimal
+    }
+
+    class Order {
+        -String orderId
+        -Customer customer
+        -List~OrderItem~ items
+        -DiscountStrategy discountStrategy
+        +Order(String orderId, Customer customer, List~OrderItem~ items, DiscountStrategy discountStrategy)
+        +setDiscountStrategy(DiscountStrategy discountStrategy) void
+        +calculateSubtotal() BigDecimal
+        +calculateDiscount() BigDecimal
+        +calculateFinalTotal() BigDecimal
+    }
+
+    class Customer {
+        <<record>>
+        +String id
+        +String name
+        +int loyaltyPoints
+        +boolean isVip
+    }
+
+    class OrderItem {
+        <<record>>
+        +String sku
+        +String name
+        +BigDecimal unitPrice
+        +int quantity
+        +getSubtotal() BigDecimal
+    }
+
+    DiscountStrategy <|.. NoDiscountStrategy : implements
+    DiscountStrategy <|.. FlatDiscountStrategy : implements
+    DiscountStrategy <|.. PercentageDiscountStrategy : implements
+    DiscountStrategy <|.. TieredVolumeDiscountStrategy : implements
+    DiscountStrategy <|.. VipCustomerDiscountStrategy : implements
+
+    Order o--> DiscountStrategy : aggregates (strategy)
+    Order o--> Customer : customer info
+    Order *--> OrderItem : contains items

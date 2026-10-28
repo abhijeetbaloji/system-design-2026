@@ -1,0 +1,45 @@
+classDiagram
+    class OrganizationComponent {
+        <<interface>>
+        +getName() String
+        +getSalary() double
+        +getHeadcount() int
+        +printHierarchy(String indent) String
+        +findByRole(String role) List~OrganizationComponent~
+    }
+
+    class EmployeeLeaf {
+        -String name
+        -String role
+        -double salary
+        +getName() String
+        +getRole() String
+        +getSalary() double
+        +getHeadcount() int
+        +printHierarchy(String indent) String
+        +findByRole(String role) List~OrganizationComponent~
+    }
+
+    class DepartmentComposite {
+        -String name
+        -List~OrganizationComponent~ members
+        +getName() String
+        +getSalary() double
+        +getHeadcount() int
+        +printHierarchy(String indent) String
+        +findByRole(String role) List~OrganizationComponent~
+        +addMember(OrganizationComponent member) DepartmentComposite
+        +removeMember(OrganizationComponent member) boolean
+        +getMembers() List~OrganizationComponent~
+    }
+
+    class PayrollService {
+        +calculateTotalPayroll(OrganizationComponent component) double
+        +calculateAverageSalary(OrganizationComponent component) double
+        +generateDepartmentSummary(OrganizationComponent component) String
+    }
+
+    OrganizationComponent <|.. EmployeeLeaf : implements
+    OrganizationComponent <|.. DepartmentComposite : implements
+    DepartmentComposite o--> OrganizationComponent : contains members
+    PayrollService --> OrganizationComponent : uses polymorphically

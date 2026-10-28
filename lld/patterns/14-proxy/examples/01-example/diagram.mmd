@@ -1,0 +1,46 @@
+classDiagram
+    class Image {
+        <<interface>>
+        +display() String
+        +getFileName() String
+        +getFileSizeBytes() long
+        +isLoaded() boolean
+    }
+
+    class RealHighResolutionImage {
+        -String fileName
+        -long fileSizeBytes
+        -byte[] pixelData
+        -boolean loaded
+        +RealHighResolutionImage(String fileName, long fileSizeBytes)
+        -loadFromDisk() void
+        +display() String
+        +getFileName() String
+        +getFileSizeBytes() long
+        +isLoaded() boolean
+    }
+
+    class ProxyImage {
+        -String fileName
+        -long estimatedSize
+        -RealHighResolutionImage realImage
+        +ProxyImage(String fileName, long estimatedSize)
+        +display() String
+        +getFileName() String
+        +getFileSizeBytes() long
+        +isLoaded() boolean
+        +getRealImage() RealHighResolutionImage
+    }
+
+    class ImageGalleryService {
+        -List~Image~ gallery
+        +addImage(Image image) void
+        +renderGalleryPlaceholders() String
+        +viewImage(int index) String
+        +getGallery() List~Image~
+    }
+
+    Image <|.. RealHighResolutionImage : implements
+    Image <|.. ProxyImage : implements
+    ProxyImage o--> RealHighResolutionImage : lazily instantiates
+    ImageGalleryService --> Image : consumes polymorphically

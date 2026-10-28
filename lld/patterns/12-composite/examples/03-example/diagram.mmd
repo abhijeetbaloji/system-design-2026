@@ -1,0 +1,49 @@
+classDiagram
+    class MenuComponent {
+        <<interface>>
+        +getName() String
+        +getDescription() String
+        +getPrice() double
+        +isVegetarian() boolean
+        +print(String indent) String
+        +filterVegetarian() List~MenuComponent~
+    }
+
+    class MenuItemLeaf {
+        -String name
+        -String description
+        -double price
+        -boolean vegetarian
+        +getName() String
+        +getDescription() String
+        +getPrice() double
+        +isVegetarian() boolean
+        +print(String indent) String
+        +filterVegetarian() List~MenuComponent~
+    }
+
+    class MenuCategoryComposite {
+        -String name
+        -String description
+        -List~MenuComponent~ components
+        +getName() String
+        +getDescription() String
+        +getPrice() double
+        +isVegetarian() boolean
+        +print(String indent) String
+        +filterVegetarian() List~MenuComponent~
+        +addComponent(MenuComponent component) MenuCategoryComposite
+        +removeComponent(MenuComponent component) boolean
+        +getComponents() List~MenuComponent~
+    }
+
+    class MenuCatalogService {
+        +displayFullMenu(MenuComponent menu) String
+        +calculateMenuTotal(MenuComponent menu) double
+        +getVegetarianItems(MenuComponent menu) List~MenuComponent~
+    }
+
+    MenuComponent <|.. MenuItemLeaf : implements
+    MenuComponent <|.. MenuCategoryComposite : implements
+    MenuCategoryComposite o--> MenuComponent : contains components
+    MenuCatalogService --> MenuComponent : uses polymorphically

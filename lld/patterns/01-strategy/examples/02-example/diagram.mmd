@@ -1,0 +1,72 @@
+classDiagram
+    direction TB
+
+    class RouteStrategy {
+        <<interface>>
+        +planRoute(Coordinate origin, Coordinate destination) Route
+    }
+
+    class DrivingRouteStrategy {
+        -double averageSpeedKmh
+        -double trafficMultiplier
+        -boolean avoidTolls
+        +DrivingRouteStrategy(double averageSpeedKmh, double trafficMultiplier, boolean avoidTolls)
+        +DrivingRouteStrategy()
+        +planRoute(Coordinate origin, Coordinate destination) Route
+    }
+
+    class WalkingRouteStrategy {
+        -double walkingSpeedKmh
+        +WalkingRouteStrategy(double walkingSpeedKmh)
+        +WalkingRouteStrategy()
+        +planRoute(Coordinate origin, Coordinate destination) Route
+    }
+
+    class BicyclingRouteStrategy {
+        -double cyclingSpeedKmh
+        +BicyclingRouteStrategy(double cyclingSpeedKmh)
+        +BicyclingRouteStrategy()
+        +planRoute(Coordinate origin, Coordinate destination) Route
+    }
+
+    class PublicTransitRouteStrategy {
+        -double transitFare
+        -int estimatedTransferMinutes
+        +PublicTransitRouteStrategy(double transitFare, int estimatedTransferMinutes)
+        +PublicTransitRouteStrategy()
+        +planRoute(Coordinate origin, Coordinate destination) Route
+    }
+
+    class Navigator {
+        -RouteStrategy routeStrategy
+        +Navigator(RouteStrategy routeStrategy)
+        +Navigator()
+        +getRouteStrategy() RouteStrategy
+        +setRouteStrategy(RouteStrategy routeStrategy) void
+        +planRoute(Coordinate origin, Coordinate destination) Route
+    }
+
+    class Coordinate {
+        <<record>>
+        +double latitude
+        +double longitude
+        +distanceTo(Coordinate other) double
+    }
+
+    class Route {
+        <<record>>
+        +double distanceKm
+        +int durationMinutes
+        +double estimatedCost
+        +String summary
+        +List~String~ turnByTurnSteps
+    }
+
+    RouteStrategy <|.. DrivingRouteStrategy : implements
+    RouteStrategy <|.. WalkingRouteStrategy : implements
+    RouteStrategy <|.. BicyclingRouteStrategy : implements
+    RouteStrategy <|.. PublicTransitRouteStrategy : implements
+
+    Navigator o--> RouteStrategy : delegates to
+    RouteStrategy ..> Coordinate : uses
+    RouteStrategy ..> Route : produces

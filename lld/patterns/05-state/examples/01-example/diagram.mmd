@@ -1,0 +1,80 @@
+classDiagram
+    direction TB
+
+    class VendingState {
+        <<interface>>
+        +insertCoin() void
+        +ejectCoin() void
+        +turnCrank() void
+        +dispense() void
+        +getStateName() String
+    }
+
+    class NoCoinState {
+        -VendingMachine machine
+        +NoCoinState(VendingMachine machine)
+        +insertCoin() void
+        +ejectCoin() void
+        +turnCrank() void
+        +dispense() void
+        +getStateName() String
+    }
+
+    class HasCoinState {
+        -VendingMachine machine
+        +HasCoinState(VendingMachine machine)
+        +insertCoin() void
+        +ejectCoin() void
+        +turnCrank() void
+        +dispense() void
+        +getStateName() String
+    }
+
+    class DispensingState {
+        -VendingMachine machine
+        +DispensingState(VendingMachine machine)
+        +insertCoin() void
+        +ejectCoin() void
+        +turnCrank() void
+        +dispense() void
+        +getStateName() String
+    }
+
+    class SoldOutState {
+        -VendingMachine machine
+        +SoldOutState(VendingMachine machine)
+        +insertCoin() void
+        +ejectCoin() void
+        +turnCrank() void
+        +dispense() void
+        +getStateName() String
+    }
+
+    class VendingMachine {
+        -VendingState noCoinState
+        -VendingState hasCoinState
+        -VendingState dispensingState
+        -VendingState soldOutState
+        -VendingState currentState
+        -int count
+        +VendingMachine(int initialCount)
+        +insertCoin() void
+        +ejectCoin() void
+        +turnCrank() void
+        +setState(VendingState newState) void
+        +releaseItem() void
+        +refill(int additionalCount) void
+        +getCurrentState() VendingState
+        +getCount() int
+    }
+
+    VendingState <|.. NoCoinState : implements
+    VendingState <|.. HasCoinState : implements
+    VendingState <|.. DispensingState : implements
+    VendingState <|.. SoldOutState : implements
+
+    VendingMachine o--> VendingState : delegates to currentState
+    NoCoinState --> VendingMachine : transitions
+    HasCoinState --> VendingMachine : transitions
+    DispensingState --> VendingMachine : transitions
+    SoldOutState --> VendingMachine : transitions

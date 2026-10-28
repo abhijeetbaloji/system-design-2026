@@ -1,0 +1,50 @@
+classDiagram
+    class PaymentProcessor {
+        <<interface>>
+        +processPayment(PaymentRequest request) PaymentResponse
+    }
+
+    class ModernStripeProcessor {
+        +processPayment(PaymentRequest request) PaymentResponse
+    }
+
+    class LegacyBankAdapter {
+        -LegacyBankGateway legacyGateway
+        -String terminalCode
+        -String secretKey
+        +processPayment(PaymentRequest request) PaymentResponse
+    }
+
+    class LegacyBankGateway {
+        +makeDirectDebit(String terminalCode, String authKey, String bankAccount, long amountInCents) long
+    }
+
+    class CheckoutService {
+        -PaymentProcessor paymentProcessor
+        +checkout(String orderId, String customerId, BigDecimal totalAmount, String account) PaymentResponse
+    }
+
+    class PaymentRequest {
+        <<record>>
+        +String transactionReference
+        +String customerId
+        +BigDecimal amount
+        +String currency
+        +String accountOrCardIdentifier
+    }
+
+    class PaymentResponse {
+        <<record>>
+        +String transactionId
+        +boolean success
+        +String message
+        +String gatewayReference
+    }
+
+    PaymentProcessor <|.. ModernStripeProcessor : implements
+    PaymentProcessor <|.. LegacyBankAdapter : implements
+    LegacyBankAdapter --> LegacyBankGateway : adapts (composition)
+
+    CheckoutService --> PaymentProcessor : depends on
+    PaymentProcessor ..> PaymentRequest : accepts
+    PaymentProcessor ..> PaymentResponse : returns

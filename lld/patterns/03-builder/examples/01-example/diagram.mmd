@@ -1,0 +1,55 @@
+classDiagram
+    direction TB
+
+    class Computer {
+        -String cpu
+        -String ram
+        -String motherboard
+        -String storage
+        -String gpu
+        -boolean hasLiquidCooling
+        -boolean hasBluetooth
+        -boolean hasRgbLighting
+        -int powerSupplyWattage
+        -Computer(Builder builder)
+        +getCpu() String
+        +getRam() String
+        +getMotherboard() String
+        +getStorage() String
+        +getGpu() String
+        +hasLiquidCooling() boolean
+        +hasBluetooth() boolean
+        +hasRgbLighting() boolean
+        +getPowerSupplyWattage() int
+        +toString() String
+    }
+
+    class Builder {
+        -String cpu
+        -String ram
+        -String motherboard
+        -String storage
+        -String gpu
+        -boolean hasLiquidCooling
+        -boolean hasBluetooth
+        -boolean hasRgbLighting
+        -int powerSupplyWattage
+        +Builder(String cpu, String ram, String motherboard)
+        +storage(String storage) Builder
+        +gpu(String gpu) Builder
+        +withLiquidCooling(boolean enabled) Builder
+        +withBluetooth(boolean enabled) Builder
+        +withRgbLighting(boolean enabled) Builder
+        +powerSupplyWattage(int wattage) Builder
+        +build() Computer
+    }
+
+    class ComputerDirector {
+        +constructHighEndGamingRig() Computer
+        +constructBudgetOfficeWorkstation() Computer
+    }
+
+    Computer +-- Builder : static inner class
+    Computer <.. Builder : instantiates
+    ComputerDirector ..> Builder : configures
+    ComputerDirector ..> Computer : constructs

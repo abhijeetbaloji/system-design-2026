@@ -1,0 +1,68 @@
+classDiagram
+    class AirTrafficControlMediator {
+        <<interface>>
+        +registerFlight(Flight flight) void
+        +registerRunway(Runway runway) void
+        +requestLandingClearance(Flight flight) boolean
+        +requestTakeoffClearance(Flight flight) boolean
+        +notifyRunwayVacated(Flight flight, Runway runway) void
+        +getEventLog() List~String~
+    }
+
+    class AtcTower {
+        -Map~String, Runway~ runways
+        -Map~String, Flight~ flights
+        -Queue~Flight~ landingHoldingPattern
+        -Queue~Flight~ takeoffHoldingPattern
+        -List~String~ eventLog
+        +registerFlight(Flight flight) void
+        +registerRunway(Runway runway) void
+        +requestLandingClearance(Flight flight) boolean
+        +requestTakeoffClearance(Flight flight) boolean
+        +notifyRunwayVacated(Flight flight, Runway runway) void
+        +getEventLog() List~String~
+    }
+
+    class Flight {
+        <<abstract>>
+        #AirTrafficControlMediator atc
+        #String flightNumber
+        #String airline
+        #FlightStatus status
+        #Runway assignedRunway
+        +requestLanding() boolean
+        +land() void
+        +requestTakeoff() boolean
+        +takeOff() void
+        +receiveClearance(String message) void
+        +getFlightNumber() String
+        +getStatus() FlightStatus
+    }
+
+    class CommercialFlight {
+        +land() void
+        +takeOff() void
+    }
+
+    class CargoFlight {
+        +land() void
+        +takeOff() void
+    }
+
+    class Runway {
+        -String runwayId
+        -boolean occupied
+        -Flight currentFlight
+        +assignFlight(Flight flight) void
+        +vacate() void
+        +isOccupied() boolean
+        +getRunwayId() String
+    }
+
+    AirTrafficControlMediator <|.. AtcTower : implements
+    Flight o-- AirTrafficControlMediator : communicates with
+    Flight <|-- CommercialFlight : extends
+    Flight <|-- CargoFlight : extends
+    AtcTower o-- Runway : coordinates
+    AtcTower o-- Flight : coordinates
+    Runway o-- Flight : holds current

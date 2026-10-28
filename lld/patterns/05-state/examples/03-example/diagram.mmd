@@ -1,0 +1,85 @@
+classDiagram
+    direction TB
+
+    class PlayerState {
+        <<interface>>
+        +play(MediaPlayer player) void
+        +pause(MediaPlayer player) void
+        +stop(MediaPlayer player) void
+        +next(MediaPlayer player) void
+        +previous(MediaPlayer player) void
+        +getStateName() String
+    }
+
+    class StoppedState {
+        +play(MediaPlayer player) void
+        +pause(MediaPlayer player) void
+        +stop(MediaPlayer player) void
+        +next(MediaPlayer player) void
+        +previous(MediaPlayer player) void
+        +getStateName() String
+    }
+
+    class PlayingState {
+        +play(MediaPlayer player) void
+        +pause(MediaPlayer player) void
+        +stop(MediaPlayer player) void
+        +next(MediaPlayer player) void
+        +previous(MediaPlayer player) void
+        +getStateName() String
+    }
+
+    class PausedState {
+        +play(MediaPlayer player) void
+        +pause(MediaPlayer player) void
+        +stop(MediaPlayer player) void
+        +next(MediaPlayer player) void
+        +previous(MediaPlayer player) void
+        +getStateName() String
+    }
+
+    class LockedState {
+        -PlayerState previousState
+        +LockedState(PlayerState previousState)
+        +unlock(MediaPlayer player) void
+        +play(MediaPlayer player) void
+        +pause(MediaPlayer player) void
+        +stop(MediaPlayer player) void
+        +next(MediaPlayer player) void
+        +previous(MediaPlayer player) void
+        +getStateName() String
+    }
+
+    class MediaPlayer {
+        -List~String~ playlist
+        -int currentTrackIndex
+        -int playbackPositionSeconds
+        -PlayerState currentState
+        +MediaPlayer(List~String~ tracks)
+        +play() void
+        +pause() void
+        +stop() void
+        +next() void
+        +previous() void
+        +toggleLock() void
+        +startAudioDecoder() void
+        +pauseAudioDecoder() void
+        +stopAudioDecoder() void
+        +advanceTrack() void
+        +retreatTrack() void
+        +setState(PlayerState newState) void
+        +getCurrentState() PlayerState
+        +getCurrentTrack() String
+    }
+
+    PlayerState <|.. StoppedState : implements
+    PlayerState <|.. PlayingState : implements
+    PlayerState <|.. PausedState : implements
+    PlayerState <|.. LockedState : implements
+
+    MediaPlayer o--> PlayerState : delegates to currentState
+    LockedState o--> PlayerState : stores previousState
+    StoppedState ..> MediaPlayer : controls
+    PlayingState ..> MediaPlayer : controls
+    PausedState ..> MediaPlayer : controls
+    LockedState ..> MediaPlayer : controls

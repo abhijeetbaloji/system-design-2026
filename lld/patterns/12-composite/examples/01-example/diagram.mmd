@@ -1,0 +1,42 @@
+classDiagram
+    class FileSystemComponent {
+        <<interface>>
+        +getName() String
+        +getSize() long
+        +display(String indent) String
+        +search(String keyword) List~FileSystemComponent~
+    }
+
+    class FileLeaf {
+        -String name
+        -long size
+        -String fileType
+        +getName() String
+        +getSize() long
+        +getFileType() String
+        +display(String indent) String
+        +search(String keyword) List~FileSystemComponent~
+    }
+
+    class DirectoryComposite {
+        -String name
+        -List~FileSystemComponent~ children
+        +getName() String
+        +getSize() long
+        +display(String indent) String
+        +search(String keyword) List~FileSystemComponent~
+        +addComponent(FileSystemComponent component) DirectoryComposite
+        +removeComponent(FileSystemComponent component) boolean
+        +getChildren() List~FileSystemComponent~
+    }
+
+    class FileSystemService {
+        +computeDiskUsage(FileSystemComponent component) long
+        +generateReport(FileSystemComponent component) String
+        +findFiles(FileSystemComponent component, String keyword) List~FileSystemComponent~
+    }
+
+    FileSystemComponent <|.. FileLeaf : implements
+    FileSystemComponent <|.. DirectoryComposite : implements
+    DirectoryComposite o--> FileSystemComponent : contains children
+    FileSystemService --> FileSystemComponent : uses polymorphically

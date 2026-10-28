@@ -1,0 +1,61 @@
+classDiagram
+    class OrgIterator {
+        <<interface>>
+        +hasNext() boolean
+        +next() EmployeeNode
+        +getCurrentDepth() int
+    }
+
+    class DepthFirstOrgIterator {
+        -Deque~NodeDepth~ stack
+        -int currentDepth
+        +hasNext() boolean
+        +next() EmployeeNode
+        +getCurrentDepth() int
+    }
+
+    class BreadthFirstOrgIterator {
+        -Queue~NodeDepth~ queue
+        -int currentDepth
+        +hasNext() boolean
+        +next() EmployeeNode
+        +getCurrentDepth() int
+    }
+
+    class EmployeeNode {
+        -String id
+        -String name
+        -String title
+        -String department
+        -double salary
+        -List~EmployeeNode~ directReports
+        +addReport(EmployeeNode subordinate) void
+        +getDirectReports() List~EmployeeNode~
+        +getId() String
+        +getName() String
+        +getTitle() String
+        +getDepartment() String
+        +getSalary() double
+    }
+
+    class OrganizationTree {
+        -EmployeeNode root
+        +setRoot(EmployeeNode root) void
+        +getRoot() EmployeeNode
+        +dfsIterator() OrgIterator
+        +bfsIterator() OrgIterator
+    }
+
+    class OrgReportingService {
+        +printChainOfCommand(OrganizationTree orgTree) String
+        +printLevelOrderTiers(OrganizationTree orgTree) String
+        +calculateTierSalaries(OrganizationTree orgTree) Map~Integer, Double~
+    }
+
+    OrgIterator <|.. DepthFirstOrgIterator : implements
+    OrgIterator <|.. BreadthFirstOrgIterator : implements
+    OrganizationTree ..> OrgIterator : creates
+    OrganizationTree o-- EmployeeNode : root
+    EmployeeNode o-- EmployeeNode : direct reports
+    OrgReportingService ..> OrganizationTree : inspects
+    OrgReportingService ..> OrgIterator : consumes

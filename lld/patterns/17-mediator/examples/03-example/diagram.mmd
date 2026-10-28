@@ -1,0 +1,81 @@
+classDiagram
+    class FormDialogMediator {
+        <<interface>>
+        +notify(UIComponent sender, FormEvent event) void
+        +isFormValid() boolean
+        +submit() boolean
+        +getStatusMessage() String
+    }
+
+    class RegistrationDialogMediator {
+        -TextInputComponent usernameInput
+        -TextInputComponent passwordInput
+        -CheckboxComponent termsCheckbox
+        -ButtonComponent submitButton
+        -BannerComponent errorBanner
+        -String statusMessage
+        +notify(UIComponent sender, FormEvent event) void
+        +isFormValid() boolean
+        +submit() boolean
+        +getStatusMessage() String
+        -validateForm() void
+    }
+
+    class FormEvent {
+        <<enumeration>>
+        VALUE_CHANGED
+        CLICKED
+    }
+
+    class UIComponent {
+        <<abstract>>
+        #FormDialogMediator mediator
+        #String id
+        #boolean enabled
+        #boolean visible
+        +setMediator(FormDialogMediator mediator) void
+        +setEnabled(boolean enabled) void
+        +setVisible(boolean visible) void
+        +getId() String
+        +isEnabled() boolean
+        +isVisible() boolean
+    }
+
+    class TextInputComponent {
+        -String text
+        +setText(String text) void
+        +getText() String
+    }
+
+    class CheckboxComponent {
+        -boolean checked
+        +setChecked(boolean checked) void
+        +isChecked() boolean
+    }
+
+    class ButtonComponent {
+        -String label
+        +click() void
+        +getLabel() String
+    }
+
+    class BannerComponent {
+        -String message
+        -boolean error
+        +showError(String message) void
+        +showSuccess(String message) void
+        +clear() void
+        +getMessage() String
+        +isError() boolean
+    }
+
+    FormDialogMediator <|.. RegistrationDialogMediator : implements
+    UIComponent o-- FormDialogMediator : notifies
+    UIComponent <|-- TextInputComponent : extends
+    UIComponent <|-- CheckboxComponent : extends
+    UIComponent <|-- ButtonComponent : extends
+    UIComponent <|-- BannerComponent : extends
+    RegistrationDialogMediator o-- TextInputComponent : coordinates
+    RegistrationDialogMediator o-- CheckboxComponent : coordinates
+    RegistrationDialogMediator o-- ButtonComponent : coordinates
+    RegistrationDialogMediator o-- BannerComponent : coordinates

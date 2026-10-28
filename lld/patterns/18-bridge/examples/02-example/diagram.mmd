@@ -1,0 +1,68 @@
+classDiagram
+    class MessageChannel {
+        <<interface>>
+        +sendMessage(String recipient, String subject, String body) boolean
+        +getChannelName() String
+        +isAvailable() boolean
+        +setAvailable(boolean available) void
+    }
+
+    class EmailMessageChannel {
+        -String smtpHost
+        -boolean available
+        +sendMessage(String recipient, String subject, String body) boolean
+        +getChannelName() String
+        +isAvailable() boolean
+        +setAvailable(boolean available) void
+    }
+
+    class SmsMessageChannel {
+        -String gatewayApiKey
+        -boolean available
+        +sendMessage(String recipient, String subject, String body) boolean
+        +getChannelName() String
+        +isAvailable() boolean
+        +setAvailable(boolean available) void
+    }
+
+    class PushNotificationChannel {
+        -String appId
+        -boolean available
+        +sendMessage(String recipient, String subject, String body) boolean
+        +getChannelName() String
+        +isAvailable() boolean
+        +setAvailable(boolean available) void
+    }
+
+    class Notification {
+        <<abstract>>
+        #MessageChannel primaryChannel
+        #MessageChannel fallbackChannel
+        +Notification(MessageChannel primaryChannel)
+        +send(String recipient, String message)* boolean
+        +setPrimaryChannel(MessageChannel channel) void
+        +setFallbackChannel(MessageChannel channel) void
+        +getPrimaryChannel() MessageChannel
+        +getFallbackChannel() MessageChannel
+    }
+
+    class NormalNotification {
+        +send(String recipient, String message) boolean
+    }
+
+    class UrgentNotification {
+        +send(String recipient, String message) boolean
+    }
+
+    class CriticalAlertNotification {
+        +send(String recipient, String message) boolean
+    }
+
+    Notification o-- MessageChannel : bridge (primaryChannel)
+    Notification o-- MessageChannel : fallback (fallbackChannel)
+    MessageChannel <|.. EmailMessageChannel : implements
+    MessageChannel <|.. SmsMessageChannel : implements
+    MessageChannel <|.. PushNotificationChannel : implements
+    Notification <|-- NormalNotification : extends
+    Notification <|-- UrgentNotification : extends
+    Notification <|-- CriticalAlertNotification : extends

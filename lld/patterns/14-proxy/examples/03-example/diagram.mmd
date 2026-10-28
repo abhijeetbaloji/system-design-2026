@@ -1,0 +1,55 @@
+classDiagram
+    class StockPriceService {
+        <<interface>>
+        +getStockQuote(String ticker) StockQuote
+        +isMarketOpen() boolean
+        +getServiceName() String
+    }
+
+    class RealStockPriceService {
+        -Map~String, Double~ liveMarketData
+        -int networkCallCount
+        +getStockQuote(String ticker) StockQuote
+        +isMarketOpen() boolean
+        +getServiceName() String
+        +getNetworkCallCount() int
+    }
+
+    class CachingStockPriceProxy {
+        -RealStockPriceService realService
+        -Map~String, CacheRecord~ cache
+        -long ttlMillis
+        -int cacheHits
+        -int cacheMisses
+        +CachingStockPriceProxy(RealStockPriceService realService, long ttlMillis)
+        +getStockQuote(String ticker) StockQuote
+        +isMarketOpen() boolean
+        +getServiceName() String
+        +evict(String ticker) void
+        +clearCache() void
+        +getCacheHits() int
+        +getCacheMisses() int
+    }
+
+    class StockQuote {
+        -String ticker
+        -double price
+        -long timestamp
+        -String currency
+        +getTicker() String
+        +getPrice() double
+        +getTimestamp() long
+        +getCurrency() String
+    }
+
+    class StockTraderDashboard {
+        -StockPriceService priceService
+        +StockTraderDashboard(StockPriceService priceService)
+        +displayTicker(String ticker) String
+    }
+
+    StockPriceService <|.. RealStockPriceService : implements
+    StockPriceService <|.. CachingStockPriceProxy : implements
+    CachingStockPriceProxy o--> RealStockPriceService : delegates to
+    StockPriceService ..> StockQuote : returns
+    StockTraderDashboard --> StockPriceService : uses polymorphically

@@ -1,0 +1,27 @@
+classDiagram
+    class CaffeineBeverage {
+        <<abstract>>
+        -List~String~ executionLog
+        +prepareRecipe() void
+        #brew()* void
+        #addCondiments()* void
+        -boilWater() void
+        -pourInCup() void
+        #customerWantsCondiments() boolean
+        +getExecutionLog() List~String~
+    }
+
+    class Coffee {
+        -boolean wantsCondiments
+        #brew() void
+        #addCondiments() void
+        #customerWantsCondiments() boolean
+    }
+
+    class Tea {
+        #brew() void
+        #addCondiments() void
+    }
+
+    CaffeineBeverage <|-- Coffee : extends
+    CaffeineBeverage <|-- Tea : extends

@@ -1,0 +1,62 @@
+classDiagram
+    class WorkflowPrototype~T~ {
+        <<interface>>
+        +clone() T
+    }
+
+    class TaskStep {
+        -String name
+        -String command
+        -int timeoutSeconds
+        -Map~String, String~ envVars
+        +TaskStep(String name, String command, int timeoutSeconds)
+        #TaskStep(TaskStep source)
+        +clone() TaskStep
+        +setEnvVar(String key, String value) void
+        +getEnvVars() Map~String, String~
+        +getName() String
+        +getCommand() String
+        +getTimeoutSeconds() int
+    }
+
+    class PipelineStage {
+        -String stageName
+        -boolean parallel
+        -List~TaskStep~ steps
+        +PipelineStage(String stageName, boolean parallel)
+        #PipelineStage(PipelineStage source)
+        +clone() PipelineStage
+        +addStep(TaskStep step) void
+        +getSteps() List~TaskStep~
+        +getStageName() String
+        +isParallel() boolean
+    }
+
+    class PipelineWorkflow {
+        -String pipelineName
+        -String triggerEvent
+        -List~PipelineStage~ stages
+        +PipelineWorkflow(String pipelineName, String triggerEvent)
+        #PipelineWorkflow(PipelineWorkflow source)
+        +clone() PipelineWorkflow
+        +addStage(PipelineStage stage) void
+        +overrideAllEnvVars(String key, String value) void
+        +getStages() List~PipelineStage~
+        +getPipelineName() String
+        +setPipelineName(String name) void
+        +getTriggerEvent() String
+    }
+
+    class WorkflowTemplateRegistry {
+        -Map~String, PipelineWorkflow~ templates
+        +registerTemplate(String key, PipelineWorkflow template) void
+        +clonePipeline(String key) PipelineWorkflow
+        +hasTemplate(String key) boolean
+    }
+
+    WorkflowPrototype <|.. TaskStep : implements
+    WorkflowPrototype <|.. PipelineStage : implements
+    WorkflowPrototype <|.. PipelineWorkflow : implements
+    PipelineWorkflow o-- PipelineStage : stages (deep copy)
+    PipelineStage o-- TaskStep : steps (deep copy)
+    WorkflowTemplateRegistry o-- PipelineWorkflow : caches templates

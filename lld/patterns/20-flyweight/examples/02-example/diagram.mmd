@@ -1,0 +1,48 @@
+classDiagram
+    class CharacterFormat {
+        -String fontName
+        -int fontSize
+        -boolean bold
+        -boolean italic
+        -String color
+        +CharacterFormat(String fontName, int fontSize, boolean bold, boolean italic, String color)
+        +render(char character, int position, StringBuilder output) void
+        +getFontName() String
+        +getFontSize() int
+        +isBold() boolean
+        +isItalic() boolean
+        +getColor() String
+    }
+
+    class CharacterFormatFactory {
+        -Map~String, CharacterFormat~ formatPool
+        +getFormat(String fontName, int fontSize, boolean bold, boolean italic, String color) CharacterFormat
+        +getFormatCount() int
+    }
+
+    class FormattedCharacter {
+        -char character
+        -int position
+        -CharacterFormat format
+        +FormattedCharacter(char character, int position, CharacterFormat format)
+        +draw(StringBuilder output) void
+        +getCharacter() char
+        +getPosition() int
+        +getFormat() CharacterFormat
+    }
+
+    class TextDocument {
+        -List~FormattedCharacter~ characters
+        -CharacterFormatFactory formatFactory
+        +append(char c, String font, int size, boolean bold, boolean italic, String color) void
+        +appendString(String text, String font, int size, boolean bold, boolean italic, String color) void
+        +render() String
+        +getCharacters() List~FormattedCharacter~
+        +getUniqueFormatCount() int
+        +getTotalCharacterCount() int
+    }
+
+    FormattedCharacter o-- CharacterFormat : references flyweight (intrinsic)
+    CharacterFormatFactory o-- CharacterFormat : pools flyweights
+    TextDocument o-- FormattedCharacter : contains contexts (extrinsic)
+    TextDocument o-- CharacterFormatFactory : uses

@@ -1,0 +1,141 @@
+classDiagram
+    direction TB
+
+    class Command {
+        <<interface>>
+        +execute() void
+        +undo() void
+    }
+
+    class NoCommand {
+        +execute() void
+        +undo() void
+    }
+
+    class LightOnCommand {
+        -Light light
+        +LightOnCommand(Light light)
+        +execute() void
+        +undo() void
+    }
+
+    class LightOffCommand {
+        -Light light
+        +LightOffCommand(Light light)
+        +execute() void
+        +undo() void
+    }
+
+    class LightDimCommand {
+        -Light light
+        -int targetLevel
+        -int previousLevel
+        +LightDimCommand(Light light, int targetLevel)
+        +execute() void
+        +undo() void
+    }
+
+    class StereoOnWithCdCommand {
+        -Stereo stereo
+        -int volume
+        -boolean previousPower
+        -int previousVolume
+        +StereoOnWithCdCommand(Stereo stereo, int volume)
+        +execute() void
+        +undo() void
+    }
+
+    class StereoOffCommand {
+        -Stereo stereo
+        -boolean previousPower
+        -int previousVolume
+        +StereoOffCommand(Stereo stereo)
+        +execute() void
+        +undo() void
+    }
+
+    class CeilingFanHighCommand {
+        -CeilingFan ceilingFan
+        -int previousSpeed
+        +CeilingFanHighCommand(CeilingFan ceilingFan)
+        +execute() void
+        +undo() void
+    }
+
+    class CeilingFanOffCommand {
+        -CeilingFan ceilingFan
+        -int previousSpeed
+        +CeilingFanOffCommand(CeilingFan ceilingFan)
+        +execute() void
+        +undo() void
+    }
+
+    class MacroCommand {
+        -List~Command~ commands
+        +MacroCommand(List~Command~ commands)
+        +execute() void
+        +undo() void
+    }
+
+    class RemoteControl {
+        -Command[] onCommands
+        -Command[] offCommands
+        -Deque~Command~ undoStack
+        +RemoteControl(int slotCount)
+        +setCommand(int slot, Command onCommand, Command offCommand) void
+        +pressOnButton(int slot) void
+        +pressOffButton(int slot) void
+        +pressUndoButton() void
+        +canUndo() boolean
+    }
+
+    class Light {
+        -String location
+        -int brightness
+        +turnOn() void
+        +turnOff() void
+        +dimTo(int level) void
+        +getBrightness() int
+        +isOn() boolean
+    }
+
+    class Stereo {
+        -String location
+        -boolean poweredOn
+        -int volume
+        +powerOn() void
+        +powerOff() void
+        +setVolume(int volume) void
+        +isPoweredOn() boolean
+        +getVolume() int
+    }
+
+    class CeilingFan {
+        -String location
+        -int speed
+        +setHigh() void
+        +setMedium() void
+        +setLow() void
+        +turnOff() void
+        +getSpeed() int
+    }
+
+    Command <|.. NoCommand : implements
+    Command <|.. LightOnCommand : implements
+    Command <|.. LightOffCommand : implements
+    Command <|.. LightDimCommand : implements
+    Command <|.. StereoOnWithCdCommand : implements
+    Command <|.. StereoOffCommand : implements
+    Command <|.. CeilingFanHighCommand : implements
+    Command <|.. CeilingFanOffCommand : implements
+    Command <|.. MacroCommand : implements
+
+    RemoteControl o--> Command : aggregates slots and undoStack
+    LightOnCommand o--> Light : receiver
+    LightOffCommand o--> Light : receiver
+    LightDimCommand o--> Light : receiver
+    StereoOnWithCdCommand o--> Stereo : receiver
+    StereoOffCommand o--> Stereo : receiver
+    CeilingFanHighCommand o--> CeilingFan : receiver
+    CeilingFanOffCommand o--> CeilingFan : receiver
+    MacroCommand o--> Command : composites

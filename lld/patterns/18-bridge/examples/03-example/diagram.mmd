@@ -1,0 +1,75 @@
+classDiagram
+    class Device {
+        <<interface>>
+        +isEnabled() boolean
+        +enable() void
+        +disable() void
+        +getVolume() int
+        +setVolume(int percent) void
+        +getChannel() int
+        +setChannel(int channel) void
+        +getDeviceName() String
+    }
+
+    class TvDevice {
+        -boolean on
+        -int volume
+        -int channel
+        +isEnabled() boolean
+        +enable() void
+        +disable() void
+        +getVolume() int
+        +setVolume(int percent) void
+        +getChannel() int
+        +setChannel(int channel) void
+        +getDeviceName() String
+    }
+
+    class RadioDevice {
+        -boolean on
+        -int volume
+        -int channel
+        +isEnabled() boolean
+        +enable() void
+        +disable() void
+        +getVolume() int
+        +setVolume(int percent) void
+        +getChannel() int
+        +setChannel(int channel) void
+        +getDeviceName() String
+    }
+
+    class RemoteControl {
+        <<abstract>>
+        #Device device
+        +RemoteControl(Device device)
+        +togglePower() void
+        +volumeDown() void
+        +volumeUp() void
+        +channelDown() void
+        +channelUp() void
+        +setDevice(Device device) void
+        +getDevice() Device
+    }
+
+    class BasicRemote {
+        +togglePower() void
+        +volumeDown() void
+        +volumeUp() void
+        +channelDown() void
+        +channelUp() void
+    }
+
+    class AdvancedRemote {
+        -int priorVolume
+        -boolean muted
+        +mute() void
+        +setDirectChannel(int channel) void
+        +isMuted() boolean
+    }
+
+    RemoteControl o-- Device : bridge (device)
+    Device <|.. TvDevice : implements
+    Device <|.. RadioDevice : implements
+    RemoteControl <|-- BasicRemote : extends
+    RemoteControl <|-- AdvancedRemote : extends

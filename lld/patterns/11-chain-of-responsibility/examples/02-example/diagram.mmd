@@ -1,0 +1,67 @@
+classDiagram
+    class Approver {
+        <<abstract>>
+        -Approver nextApprover
+        -String roleName
+        -BigDecimal approvalLimit
+        +setNext(Approver next) Approver
+        +process(PurchaseRequest request) ApprovalResult
+        #canApprove(BigDecimal amount) boolean
+        #executeApproval(PurchaseRequest request)* ApprovalResult
+        #passToNext(PurchaseRequest request) ApprovalResult
+        +getRoleName() String
+        +getApprovalLimit() BigDecimal
+    }
+
+    class TeamLeadApprover {
+        #executeApproval(PurchaseRequest request) ApprovalResult
+    }
+
+    class ManagerApprover {
+        #executeApproval(PurchaseRequest request) ApprovalResult
+    }
+
+    class DirectorApprover {
+        #executeApproval(PurchaseRequest request) ApprovalResult
+    }
+
+    class VicePresidentApprover {
+        #executeApproval(PurchaseRequest request) ApprovalResult
+    }
+
+    class BoardApprover {
+        #executeApproval(PurchaseRequest request) ApprovalResult
+    }
+
+    class ApprovalWorkflowService {
+        -Approver chainHead
+        +submitRequest(PurchaseRequest request) ApprovalResult
+    }
+
+    class PurchaseRequest {
+        <<record>>
+        +String requestId
+        +String purpose
+        +BigDecimal amount
+        +String requestedBy
+    }
+
+    class ApprovalResult {
+        <<record>>
+        +String requestId
+        +boolean approved
+        +String approverRole
+        +String message
+        +BigDecimal amount
+    }
+
+    Approver <|-- TeamLeadApprover : extends
+    Approver <|-- ManagerApprover : extends
+    Approver <|-- DirectorApprover : extends
+    Approver <|-- VicePresidentApprover : extends
+    Approver <|-- BoardApprover : extends
+    Approver --> Approver : nextApprover
+
+    ApprovalWorkflowService --> Approver : delegates to chainHead
+    Approver ..> PurchaseRequest : evaluates
+    Approver ..> ApprovalResult : produces

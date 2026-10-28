@@ -7,10 +7,10 @@ import java.util.Objects;
  *
  * Key Decorator characteristics:
  * 1. Dual relationship: Implements Beverage (type conformance) and aggregates
- *    a Beverage instance (composition).
+ * a Beverage instance (composition).
  * 2. Immutable wrapper: The wrapped reference is protected and final.
  * 3. Delegation base: Subclasses delegate calls down the chain and append
- *    their own condiment behavior.
+ * their own condiment behavior.
  */
 public abstract class CondimentDecorator implements Beverage {
     protected final Beverage beverage;

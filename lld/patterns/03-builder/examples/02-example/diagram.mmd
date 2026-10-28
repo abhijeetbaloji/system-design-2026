@@ -1,0 +1,70 @@
+classDiagram
+    direction TB
+
+    class Meal {
+        -MenuItem mainItem
+        -MenuItem sideItem
+        -MenuItem drinkItem
+        -MenuItem dessertItem
+        -DietaryType dietaryType
+        -boolean isTakeout
+        -boolean includesToy
+        -double totalPrice
+        -Meal(Builder builder)
+        +getMainItem() MenuItem
+        +getSideItem() MenuItem
+        +getDrinkItem() MenuItem
+        +getDessertItem() MenuItem
+        +getDietaryType() DietaryType
+        +isTakeout() boolean
+        +includesToy() boolean
+        +getTotalPrice() double
+        +toString() String
+    }
+
+    class Builder {
+        -MenuItem mainItem
+        -MenuItem sideItem
+        -MenuItem drinkItem
+        -MenuItem dessertItem
+        -DietaryType dietaryType
+        -boolean isTakeout
+        -boolean includesToy
+        +main(MenuItem mainItem) Builder
+        +side(MenuItem sideItem) Builder
+        +drink(MenuItem drinkItem) Builder
+        +dessert(MenuItem dessertItem) Builder
+        +dietary(DietaryType dietaryType) Builder
+        +takeout(boolean isTakeout) Builder
+        +withToy(boolean includesToy) Builder
+        +build() Meal
+    }
+
+    class MenuItem {
+        <<record>>
+        +String name
+        +double price
+        +boolean isVegan
+        +boolean isGlutenFree
+    }
+
+    class DietaryType {
+        <<enumeration>>
+        REGULAR
+        VEGETARIAN
+        VEGAN
+        GLUTEN_FREE
+    }
+
+    class MealDirector {
+        +constructClassicBurgerCombo() Meal
+        +constructKidsHappyMeal() Meal
+        +constructVeganDelightMeal() Meal
+    }
+
+    Meal +-- Builder : static inner class
+    Meal <.. Builder : instantiates
+    Meal *--> MenuItem : aggregates
+    Meal o--> DietaryType : tags
+    MealDirector ..> Builder : configures
+    MealDirector ..> Meal : produces

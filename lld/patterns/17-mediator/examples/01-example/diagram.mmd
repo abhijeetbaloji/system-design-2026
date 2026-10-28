@@ -1,0 +1,49 @@
+classDiagram
+    class ChatMediator {
+        <<interface>>
+        +registerUser(User user) void
+        +unregisterUser(String userId) void
+        +broadcastMessage(String message, User sender) void
+        +sendDirectMessage(String message, User sender, String recipientId) boolean
+        +getUserCount() int
+    }
+
+    class ChatRoomMediator {
+        -Map~String, User~ users
+        -List~String~ auditLog
+        +registerUser(User user) void
+        +unregisterUser(String userId) void
+        +broadcastMessage(String message, User sender) void
+        +sendDirectMessage(String message, User sender, String recipientId) boolean
+        +getAuditLog() List~String~
+        +getUserCount() int
+    }
+
+    class User {
+        <<abstract>>
+        #ChatMediator mediator
+        #String id
+        #String name
+        #List~String~ receivedMessages
+        +sendBroadcast(String message) void
+        +sendDirect(String message, String recipientId) boolean
+        +receiveMessage(String message, String senderName)* void
+        +getId() String
+        +getName() String
+        +getReceivedMessages() List~String~
+    }
+
+    class StandardUser {
+        +receiveMessage(String message, String senderName) void
+    }
+
+    class AdminUser {
+        +receiveMessage(String message, String senderName) void
+        +broadcastAnnouncement(String announcement) void
+    }
+
+    ChatMediator <|.. ChatRoomMediator : implements
+    User o-- ChatMediator : communicates via
+    User <|-- StandardUser : extends
+    User <|-- AdminUser : extends
+    ChatRoomMediator o-- User : manages colleagues

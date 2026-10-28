@@ -1,0 +1,81 @@
+classDiagram
+    class GUIFactory {
+        <<interface>>
+        +createButton(String label) Button
+        +createCheckbox(String label) Checkbox
+    }
+
+    class WindowsGUIFactory {
+        +createButton(String label) Button
+        +createCheckbox(String label) Checkbox
+    }
+
+    class MacGUIFactory {
+        +createButton(String label) Button
+        +createCheckbox(String label) Checkbox
+    }
+
+    class Button {
+        <<interface>>
+        +render() String
+        +onClick() String
+    }
+
+    class Checkbox {
+        <<interface>>
+        +render() String
+        +toggle() void
+        +isChecked() boolean
+    }
+
+    class WindowsButton {
+        -String label
+        +render() String
+        +onClick() String
+    }
+
+    class WindowsCheckbox {
+        -String label
+        -boolean checked
+        +render() String
+        +toggle() void
+        +isChecked() boolean
+    }
+
+    class MacButton {
+        -String label
+        +render() String
+        +onClick() String
+    }
+
+    class MacCheckbox {
+        -String label
+        -boolean checked
+        +render() String
+        +toggle() void
+        +isChecked() boolean
+    }
+
+    class Application {
+        -Button button
+        -Checkbox checkbox
+        +Application(GUIFactory factory, String btnLabel, String chkLabel)
+        +renderUI() String
+        +interact() void
+        +getButton() Button
+        +getCheckbox() Checkbox
+    }
+
+    GUIFactory <|.. WindowsGUIFactory : implements
+    GUIFactory <|.. MacGUIFactory : implements
+    Button <|.. WindowsButton : implements
+    Button <|.. MacButton : implements
+    Checkbox <|.. WindowsCheckbox : implements
+    Checkbox <|.. MacCheckbox : implements
+    WindowsGUIFactory ..> WindowsButton : creates
+    WindowsGUIFactory ..> WindowsCheckbox : creates
+    MacGUIFactory ..> MacButton : creates
+    MacGUIFactory ..> MacCheckbox : creates
+    Application --> GUIFactory : depends on
+    Application --> Button : uses
+    Application --> Checkbox : uses

@@ -6,6 +6,8 @@ package com.systemdesign.lld.fooddelivery.good;
  * than the one currently bound to the cart.
  */
 public class RestaurantMismatchException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
+
     public RestaurantMismatchException(String message) {
         super(message);
     }

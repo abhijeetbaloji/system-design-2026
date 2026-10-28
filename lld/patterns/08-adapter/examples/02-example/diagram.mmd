@@ -1,0 +1,49 @@
+classDiagram
+    class WeatherService {
+        <<interface>>
+        +getWeather(String city) WeatherData
+    }
+
+    class ThirdPartyMeteoAdapter {
+        -ExternalMeteoService meteoService
+        -GeoLocationResolver geoResolver
+        -String apiToken
+        +getWeather(String city) WeatherData
+        -mapSkyStatus(int code) String
+    }
+
+    class ExternalMeteoService {
+        +queryCoordinates(double latitude, double longitude, String apiToken) ExternalMeteoReport
+    }
+
+    class GeoLocationResolver {
+        +resolve(String city) Coordinates
+    }
+
+    class WeatherDashboard {
+        -WeatherService weatherService
+        +fetchReport(String city) WeatherData
+        +displayWeather(String city) void
+    }
+
+    class WeatherData {
+        <<record>>
+        +String city
+        +double temperatureCelsius
+        +double humidityPercent
+        +String conditionSummary
+    }
+
+    class ExternalMeteoReport {
+        <<record>>
+        +double tempFahrenheit
+        +double relHumidityRatio
+        +int skyStatusCode
+    }
+
+    WeatherService <|.. ThirdPartyMeteoAdapter : implements
+    ThirdPartyMeteoAdapter --> ExternalMeteoService : adapts (composition)
+    ThirdPartyMeteoAdapter --> GeoLocationResolver : uses
+    WeatherDashboard --> WeatherService : depends on
+    WeatherService ..> WeatherData : returns
+    ExternalMeteoService ..> ExternalMeteoReport : returns

@@ -1,0 +1,76 @@
+classDiagram
+    class HomeTheaterFacade {
+        -PopcornPopper popper
+        -TheaterLights lights
+        -Projector projector
+        -Amplifier amp
+        -StreamingPlayer player
+        +watchMovie(String movie) void
+        +pauseMovie() void
+        +resumeMovie() void
+        +endMovie() void
+        +getAmp() Amplifier
+        +getLights() TheaterLights
+        +getPopper() PopcornPopper
+        +getProjector() Projector
+        +getPlayer() StreamingPlayer
+    }
+
+    class PopcornPopper {
+        -boolean on
+        +on() void
+        +pop() void
+        +off() void
+        +isOn() boolean
+    }
+
+    class TheaterLights {
+        -int brightness
+        +dim(int level) void
+        +on() void
+        +getBrightness() int
+    }
+
+    class Projector {
+        -boolean on
+        -boolean wideScreenMode
+        +on() void
+        +wideScreenMode() void
+        +off() void
+        +isOn() boolean
+        +isWideScreenMode() boolean
+    }
+
+    class Amplifier {
+        -boolean on
+        -int volume
+        -boolean surroundSound
+        +on() void
+        +setSurroundSound() void
+        +setVolume(int level) void
+        +off() void
+        +isOn() boolean
+        +getVolume() int
+        +isSurroundSound() boolean
+    }
+
+    class StreamingPlayer {
+        -boolean on
+        -boolean playing
+        -String currentMovie
+        +on() void
+        +play(String movie) void
+        +pause() void
+        +resume() void
+        +stop() void
+        +off() void
+        +isOn() boolean
+        +isPlaying() boolean
+        +getCurrentMovie() String
+    }
+
+    HomeTheaterFacade --> PopcornPopper : orchestrates
+    HomeTheaterFacade --> TheaterLights : orchestrates
+    HomeTheaterFacade --> Projector : orchestrates
+    HomeTheaterFacade --> Amplifier : orchestrates
+    HomeTheaterFacade --> StreamingPlayer : orchestrates

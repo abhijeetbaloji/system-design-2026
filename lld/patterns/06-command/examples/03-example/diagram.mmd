@@ -1,0 +1,73 @@
+classDiagram
+    class TaskCommand {
+        <<interface>>
+        +getName() String
+        +getPriority() int
+        +isRetryable() boolean
+        +execute() void
+    }
+
+    class DatabaseService {
+        +backupDatabase(String dbName, String targetPath) void
+    }
+
+    class EmailService {
+        +sendEmail(String recipient, String subject, String body) void
+    }
+
+    class FileSystemService {
+        +purgeOldLogs(String directoryPath, int retentionDays) int
+    }
+
+    class DatabaseBackupCommand {
+        -DatabaseService databaseService
+        -String databaseName
+        -String destinationPath
+        -int priority
+        +execute() void
+    }
+
+    class EmailDigestCommand {
+        -EmailService emailService
+        -String recipient
+        -String subject
+        -String body
+        -int priority
+        +execute() void
+    }
+
+    class LogCleanupCommand {
+        -FileSystemService fileSystemService
+        -String directoryPath
+        -int retentionDays
+        -int priority
+        +execute() void
+    }
+
+    class TaskScheduler {
+        -Queue~TaskCommand~ taskQueue
+        -List~ExecutionResult~ auditTrail
+        +schedule(TaskCommand command) void
+        +executeNext() ExecutionResult
+        +executeAll() List~ExecutionResult~
+        +getAuditHistory() List~ExecutionResult~
+    }
+
+    class ExecutionResult {
+        <<record>>
+        +String taskName
+        +boolean success
+        +String message
+        +long executedAtMillis
+    }
+
+    TaskCommand <|.. DatabaseBackupCommand : implements
+    TaskCommand <|.. EmailDigestCommand : implements
+    TaskCommand <|.. LogCleanupCommand : implements
+
+    DatabaseBackupCommand --> DatabaseService : receiver
+    EmailDigestCommand --> EmailService : receiver
+    LogCleanupCommand --> FileSystemService : receiver
+
+    TaskScheduler o--> TaskCommand : queues & dispatches
+    TaskScheduler ..> ExecutionResult : records

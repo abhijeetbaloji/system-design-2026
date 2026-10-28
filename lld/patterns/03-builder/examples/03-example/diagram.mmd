@@ -1,0 +1,82 @@
+classDiagram
+    direction TB
+
+    class ReportBuilder {
+        <<interface>>
+        +buildTitle(String title, String author) ReportBuilder
+        +buildSummary(String summary) ReportBuilder
+        +buildSection(String heading, String content) ReportBuilder
+        +buildTable(List~String~ headers, List~List~String~~ rows) ReportBuilder
+        +buildFooter(String footerText) ReportBuilder
+    }
+
+    class HtmlReportBuilder {
+        -StringBuilder body
+        -String title
+        -String author
+        -String footer
+        +buildTitle(String title, String author) ReportBuilder
+        +buildSummary(String summary) ReportBuilder
+        +buildSection(String heading, String content) ReportBuilder
+        +buildTable(List~String~ headers, List~List~String~~ rows) ReportBuilder
+        +buildFooter(String footerText) ReportBuilder
+        +getReport() HtmlReport
+    }
+
+    class MarkdownReportBuilder {
+        -StringBuilder body
+        -String title
+        -String author
+        -String footer
+        +buildTitle(String title, String author) ReportBuilder
+        +buildSummary(String summary) ReportBuilder
+        +buildSection(String heading, String content) ReportBuilder
+        +buildTable(List~String~ headers, List~List~String~~ rows) ReportBuilder
+        +buildFooter(String footerText) ReportBuilder
+        +getReport() MarkdownReport
+    }
+
+    class JsonReportBuilder {
+        -String title
+        -String author
+        -String summary
+        -List~String~ sectionsJson
+        -List~String~ tableJson
+        -String footer
+        +buildTitle(String title, String author) ReportBuilder
+        +buildSummary(String summary) ReportBuilder
+        +buildSection(String heading, String content) ReportBuilder
+        +buildTable(List~String~ headers, List~List~String~~ rows) ReportBuilder
+        +buildFooter(String footerText) ReportBuilder
+        +getReport() JsonReport
+    }
+
+    class HtmlReport {
+        <<record>>
+        +String htmlContent
+    }
+
+    class MarkdownReport {
+        <<record>>
+        +String markdownContent
+    }
+
+    class JsonReport {
+        <<record>>
+        +String jsonContent
+    }
+
+    class ReportDirector {
+        +constructFinancialPerformanceReport(ReportBuilder builder) void
+        +constructSystemHealthAuditReport(ReportBuilder builder) void
+    }
+
+    ReportBuilder <|.. HtmlReportBuilder : implements
+    ReportBuilder <|.. MarkdownReportBuilder : implements
+    ReportBuilder <|.. JsonReportBuilder : implements
+
+    HtmlReportBuilder ..> HtmlReport : creates
+    MarkdownReportBuilder ..> MarkdownReport : creates
+    JsonReportBuilder ..> JsonReport : creates
+
+    ReportDirector o--> ReportBuilder : directs

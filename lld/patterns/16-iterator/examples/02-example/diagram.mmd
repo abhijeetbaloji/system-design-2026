@@ -1,0 +1,66 @@
+classDiagram
+    class BookIterator {
+        <<interface>>
+        +hasNext() boolean
+        +next() Book
+        +peek() Book
+    }
+
+    class GenreFilterIterator {
+        -List~Book~ books
+        -String targetGenre
+        -int cursor
+        +hasNext() boolean
+        +next() Book
+        +peek() Book
+    }
+
+    class AuthorFilterIterator {
+        -List~Book~ books
+        -String targetAuthor
+        -int cursor
+        +hasNext() boolean
+        +next() Book
+        +peek() Book
+    }
+
+    class ChronologicalBookIterator {
+        -List~Book~ sortedBooks
+        -int cursor
+        +hasNext() boolean
+        +next() Book
+        +peek() Book
+    }
+
+    class LibraryCollection {
+        -List~Book~ catalog
+        +addBook(Book book) void
+        +iteratorByGenre(String genre) BookIterator
+        +iteratorByAuthor(String author) BookIterator
+        +chronologicalIterator() BookIterator
+        +size() int
+    }
+
+    class Book {
+        -String isbn
+        -String title
+        -String author
+        -String genre
+        -int publicationYear
+        +getIsbn() String
+        +getTitle() String
+        +getAuthor() String
+        +getGenre() String
+        +getPublicationYear() int
+    }
+
+    class LibrarySearchService {
+        +printReport(String title, BookIterator iterator) String
+    }
+
+    BookIterator <|.. GenreFilterIterator : implements
+    BookIterator <|.. AuthorFilterIterator : implements
+    BookIterator <|.. ChronologicalBookIterator : implements
+    LibraryCollection ..> BookIterator : produces
+    LibraryCollection o--> Book : contains
+    LibrarySearchService --> BookIterator : uses

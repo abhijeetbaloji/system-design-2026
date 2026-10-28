@@ -1,0 +1,57 @@
+classDiagram
+    class Renderer {
+        <<interface>>
+        +renderCircle(double x, double y, double radius) String
+        +renderRectangle(double x, double y, double width, double height) String
+        +getRendererType() String
+    }
+
+    class VectorRenderer {
+        -double scaleFactor
+        +renderCircle(double x, double y, double radius) String
+        +renderRectangle(double x, double y, double width, double height) String
+        +getRendererType() String
+    }
+
+    class RasterRenderer {
+        -int dpi
+        +renderCircle(double x, double y, double radius) String
+        +renderRectangle(double x, double y, double width, double height) String
+        +getRendererType() String
+    }
+
+    class Shape {
+        <<abstract>>
+        #Renderer renderer
+        +Shape(Renderer renderer)
+        +draw()* String
+        +calculateArea()* double
+        +calculatePerimeter()* double
+        +setRenderer(Renderer renderer) void
+        +getRenderer() Renderer
+    }
+
+    class Circle {
+        -double x
+        -double y
+        -double radius
+        +draw() String
+        +calculateArea() double
+        +calculatePerimeter() double
+    }
+
+    class Rectangle {
+        -double x
+        -double y
+        -double width
+        -double height
+        +draw() String
+        +calculateArea() double
+        +calculatePerimeter() double
+    }
+
+    Shape o-- Renderer : bridge (has-a)
+    Renderer <|.. VectorRenderer : implements
+    Renderer <|.. RasterRenderer : implements
+    Shape <|-- Circle : extends
+    Shape <|-- Rectangle : extends

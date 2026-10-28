@@ -1,0 +1,56 @@
+classDiagram
+    class Document {
+        <<interface>>
+        +getId() String
+        +getTitle() String
+        +read(User user) String
+        +write(User user, String newContent) void
+        +delete(User user) boolean
+    }
+
+    class RealDocument {
+        -String id
+        -String title
+        -String content
+        -boolean deleted
+        +getId() String
+        +getTitle() String
+        +read(User user) String
+        +write(User user, String newContent) void
+        +delete(User user) boolean
+        +getContent() String
+    }
+
+    class DocumentAccessProxy {
+        -RealDocument realDocument
+        -List~String~ auditLog
+        +DocumentAccessProxy(RealDocument realDocument)
+        +getId() String
+        +getTitle() String
+        +read(User user) String
+        +write(User user, String newContent) void
+        +delete(User user) boolean
+        +getAuditLog() List~String~
+        -checkPermission(User user, Action action) void
+    }
+
+    class User {
+        -String username
+        -Role role
+        +getUsername() String
+        +getRole() Role
+    }
+
+    class Role {
+        <<enumeration>>
+        GUEST
+        VIEWER
+        MANAGER
+        ADMIN
+    }
+
+    Document <|.. RealDocument : implements
+    Document <|.. DocumentAccessProxy : implements
+    DocumentAccessProxy o--> RealDocument : delegates to
+    Document ..> User : checks access for
+    User --> Role : has

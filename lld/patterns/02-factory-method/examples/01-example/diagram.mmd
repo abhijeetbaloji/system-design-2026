@@ -1,0 +1,57 @@
+classDiagram
+    direction TB
+
+    class Notification {
+        <<interface>>
+        +send(recipient: String, message: String) void
+        +getChannelName() String
+    }
+
+    class EmailNotification {
+        -smtpServer: String
+        -port: int
+        +send(recipient: String, message: String) void
+        +getChannelName() String
+    }
+
+    class SmsNotification {
+        -senderId: String
+        +send(recipient: String, message: String) void
+        +getChannelName() String
+    }
+
+    class NotificationService {
+        <<abstract>>
+        +sendAlert(recipient: String, message: String) void
+        -recordAuditTrail(recipient: String, channel: String) void
+        #createNotification()* Notification
+    }
+
+    class EmailNotificationService {
+        -smtpHost: String
+        -smtpPort: int
+        #createNotification() Notification
+    }
+
+    class SmsNotificationService {
+        -senderId: String
+        #createNotification() Notification
+    }
+
+    class NotificationDemo {
+        +main(args: String[]) void
+        -triggerSystemEvent(service: NotificationService, recipient: String, message: String) void
+    }
+
+    %% Relationships
+    Notification <|.. EmailNotification : implements
+    Notification <|.. SmsNotification : implements
+
+    NotificationService <|-- EmailNotificationService : extends
+    NotificationService <|-- SmsNotificationService : extends
+
+    NotificationService ..> Notification : uses abstraction
+    EmailNotificationService ..> EmailNotification : instantiates via createNotification()
+    SmsNotificationService ..> SmsNotification : instantiates via createNotification()
+
+    NotificationDemo ..> NotificationService : depends on Creator abstraction
