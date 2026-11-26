@@ -1,9 +1,7 @@
 # Spring & Spring Boot — Interview Questions and Answers (Zero Duplicates)
 
-This document is a comprehensive, deduplicated interview preparation guide for Java Backend Developers.
-All 110 raw questions in `questions.md` were audited: 59 redundant and duplicate questions were removed, leaving **51 unique, high-yield interview questions**.
-
-For full deduplication mappings and technical rationale, see [deduplication-report.md](file:///Users/abhijeet/Desktop/system-design-2026/interviewQ-and-answers/07-spring-and-spring-boot/deduplication-report.md).
+This document is a comprehensive interview preparation guide for Java Backend Developers.
+All questions have been audited and organized by interview priority with zero duplicate entries.
 
 Questions are arranged into 4 priority tiers:
 - **Priority 1 — Must Know (18 Questions):** Fundamental core concepts expected in every backend interview.
@@ -17,7 +15,7 @@ Questions are arranged into 4 priority tiers:
 
 ## Topic: Inversion of Control & Dependency Injection
 
-### Q540 — 10. What is IOC in Spring
+### Q540 — What is IOC in Spring
 
 **Interview Answer (Short):**
 Inversion of Control (IoC) is an architectural design principle where the control of object creation, configuration, and lifecycle management is transferred from the application code to a framework or container. Instead of a class instantiating its own dependencies using `new OrderRepository()`, the Spring IoC container creates the dependencies and injects them when needed.
@@ -81,7 +79,7 @@ Always clarify that IoC is the *general principle* (the concept of giving up con
 
 ---
 
-### Q479 — 16)Explain Dependency injection in springboot ? which is best ?
+### Q479 — Explain Dependency injection in springboot ? which is best ?
 
 **Interview Answer (Short):**
 In Spring Boot, Dependency Injection is implemented primarily via **Constructor Injection**, **Setter Injection**, or **Field Injection**. 
@@ -144,7 +142,7 @@ Mention that starting with Spring Boot 2.6+, circular dependencies in constructo
 
 ---
 
-### Q518 — 9  what is @Autowired?
+### Q518 — what is @Autowired?
 
 **Interview Answer (Short):**
 `@Autowired` is a Spring annotation used to mark a dependency to be resolved and injected automatically by the Spring container by type. It can be applied on constructors, setter methods, config methods, and fields.
@@ -197,7 +195,7 @@ Always note that while `@Autowired` on fields is very common in tutorials, const
 
 ## Topic: Spring Beans, Scopes & Lifecycle
 
-### Q489 — 5. What is bean?
+### Q489 — What is bean?
 
 **Interview Answer (Short):**
 A Spring Bean is simply a Java object that is instantiated, configured, assembled, and fully managed by the Spring IoC container. Unlike normal Java objects created using `new`, a bean lives within the container's lifecycle, benefits from dependency injection, and can have cross-cutting features like transactions and security applied to it automatically.
@@ -253,7 +251,7 @@ Interviewers often ask: *"Is a JPA Entity (like `@Entity class User`) a Spring B
 
 ---
 
-### Q482 — 9. What is bean and its scope?
+### Q482 — What is bean and its scope?
 
 **Interview Answer (Short):**
 A Spring Bean is a container-managed object. Its **scope** defines the lifecycle and visibility of that bean instance within the application context. 
@@ -313,7 +311,7 @@ Because the singleton bean is only instantiated once, the prototype bean is also
 
 ---
 
-### Q469 — 9. Explain Spring Bean life cycle?
+### Q469 — Explain Spring Bean life cycle?
 
 **Interview Answer (Short):**
 The Spring Bean lifecycle represents the complete journey of a bean managed by the Spring container:
@@ -387,7 +385,7 @@ Emphasize that `@PostConstruct` is the correct place for warm-up logic (e.g. loa
 
 ## Topic: Core Stereotypes & Component Scanning
 
-### Q473 — • Difference between @Bean and @Component
+### Q473 — Difference between @Bean and @Component
 
 **Interview Answer (Short):**
 `@Component` is a **class-level** annotation used for auto-detecting and registering beans using classpath scanning. 
@@ -438,7 +436,7 @@ Answer: *"No, because external JAR classes are compiled bytecode and cannot be e
 
 ---
 
-### Q556 — • Difference between @Component, @Service, and @Repository.
+### Q556 — Difference between @Component, @Service, and @Repository.
 
 **Interview Answer (Short):**
 While `@Component`, `@Service`, and `@Repository` all register a Spring bean via component scanning:
@@ -499,7 +497,7 @@ Interviewers specifically look for the keyword: **"PersistenceExceptionTranslati
 
 ---
 
-### Q566 — 16. Can use @service and @component interchangeably?
+### Q566 — Can use @service and @component interchangeably?
 
 **Interview Answer (Short):**
 Technically, **yes**, `@Service` and `@Component` can be used interchangeably without causing runtime errors because `@Service` is meta-annotated with `@Component`. 
@@ -527,7 +525,7 @@ Give a two-part answer: First address technical functionality (*"Yes, the Spring
 
 ---
 
-### Q557 — 8)@Primary vs @Qualifier in spring
+### Q557 — @Primary vs @Qualifier in spring
 
 **Interview Answer (Short):**
 `@Primary` sets a default bean among multiple candidates at the **declaration level**, while `@Qualifier` selects a specific bean by name at the **injection point**. If both are present, `@Qualifier` takes precedence.
@@ -570,7 +568,7 @@ Point out that using `@Primary` is ideal when introducing a new default implemen
 
 ## Topic: Spring Boot Core & Auto-Configuration
 
-### Q475 — 8.What is Spring Boot, and why choose Spring Boot over Spring Core?
+### Q475 — What is Spring Boot, and why choose Spring Boot over Spring Core?
 
 **Interview Answer (Short):**
 Spring Boot is an opinionated, production-ready extension of the Spring Framework designed to eliminate boilerplate configuration. 
@@ -629,7 +627,7 @@ Do not say *"Spring Boot replaces Spring Framework."* Spring Boot **is built on 
 
 ---
 
-### Q526 — • @springbootapplication annotation explain the working.
+### Q526 — @springbootapplication annotation explain the working.
 
 **Interview Answer (Short):**
 `@SpringBootApplication` works by triggering a three-phase bootstrap when `SpringApplication.run()` is called:
@@ -690,7 +688,7 @@ Knowing the exact location of auto-configuration definitions (`META-INF/spring/o
 
 ---
 
-### Q559 — 4. Explain spring boot auto configuration.
+### Q559 — Explain spring boot auto configuration.
 
 **Interview Answer (Short):**
 Spring Boot Auto-Configuration is an intelligent mechanism that automatically configures beans in the `ApplicationContext` based on the JAR libraries detected on the classpath and defined properties. 
@@ -754,7 +752,7 @@ Always emphasize: **"Developer configuration always overrides auto-configuration
 
 ## Topic: Web MVC & REST Fundamentals
 
-### Q498 — 12. Explain different annotations used in spring application
+### Q498 — Explain different annotations used in spring application
 
 **Interview Answer (Short):**
 In a typical Spring application, annotations drive the entire architecture:
@@ -803,7 +801,7 @@ Mention that cross-cutting annotations like `@Transactional`, `@Async`, and `@Ca
 
 ---
 
-### Q533 — 8.  some annotations in springboot (Eg. controller, RestController etc.)
+### Q533 — some annotations in springboot (Eg. controller, RestController etc.)
 
 **Interview Answer (Short):**
 The most important web annotations in Spring Boot are `@Controller` and `@RestController`:
@@ -851,8 +849,7 @@ Always mention that `@RestController` is simply a convenience shortcut for `@Con
 
 ---
 
-### Q476 — 11.How do you take input from a client in a Spring Boot application and send a response 
-back?
+### Q476 — How do you take input from a client in a Spring Boot application and send a response
 
 **Interview Answer (Short):**
 In a Spring Boot application:
@@ -906,7 +903,7 @@ Always mention returning `ResponseEntity<T>` rather than raw POJOs. `ResponseEnt
 
 ---
 
-### Q555 — • How to configure global exception handling in Spring Boot.
+### Q555 — How to configure global exception handling in Spring Boot.
 
 **Interview Answer (Short):**
 Global exception handling in Spring Boot is configured using **`@RestControllerAdvice`** and **`@ExceptionHandler`**:
@@ -971,7 +968,7 @@ Mentioning RFC 7807 (`ProblemDetail`), introduced natively in Spring 6 / Spring 
 
 ## Topic: Transaction Management
 
-### Q562 — 12. How to handle transactions in spring boot in case of any issue ?
+### Q562 — How to handle transactions in spring boot in case of any issue ?
 
 **Interview Answer (Short):**
 To handle transactions in Spring Boot:
@@ -1046,7 +1043,7 @@ Be ready for the famous **Self-Invocation Trap**: If method `a()` calls method `
 
 ## Topic: Data, Repositories & Concurrency
 
-### Q517 — 8  Step by Step Process to create a spring boot application for a entity employee?
+### Q517 — Step by Step Process to create a spring boot application for a entity employee?
 
 **Interview Answer (Short):**
 To build a Spring Boot CRUD application for an Employee entity:
@@ -1129,8 +1126,7 @@ Always use DTOs (Java records) rather than exposing JPA `@Entity` classes direct
 
 ---
 
-### Q554 — 1) They asked the same catalog details, with results sorted by price, and asked me to 
-design the complete Spring Boot API to support this
+### Q554 — They asked the same catalog details, with results sorted by price, and asked me to
 
 **Interview Answer (Short):**
 To implement a catalog listing endpoint sorted by price and paginated:
@@ -1180,8 +1176,7 @@ Mention performance optimization: The count query generated by `Page<T>` can be 
 
 ---
 
-### Q553 — 4.Fetching and inserting data at the same time by different users spring boot real-time 
-implementation
+### Q553 — Fetching and inserting data at the same time by different users spring boot real-time
 
 **Interview Answer (Short):**
 To handle simultaneous fetching and inserting of data by different users in real time:
@@ -1234,7 +1229,7 @@ Explain that for high-throughput read-heavy systems, optimistic locking is far s
 
 ---
 
-## Topic: Externalized Configuration & Profiles
+## Topic: Configuration & Profiles
 
 ### Q512 — Question related  application.properties file and application.yml file
 
@@ -1275,7 +1270,7 @@ If both files exist in the same location, Spring Boot loads `application.propert
 
 ---
 
-### Q505 — 11) How do we load the application.properties file in Spring Boot?
+### Q505 — How do we load the application.properties file in Spring Boot?
 
 **Interview Answer (Short):**
 Spring Boot automatically loads `application.properties` during application bootstrap via the `ConfigDataEnvironmentPostProcessor` (in Spring Boot 2.4+) or `ConfigFileApplicationListener`. It searches predefined classpath and filesystem locations in a specific order of precedence, loading keys into Spring's `Environment`.
@@ -1303,7 +1298,7 @@ Remember: Properties in `./config/` outside your JAR will **override** propertie
 
 ---
 
-### Q520 — 20  How to externalize configuration in SpringBoot Application?
+### Q520 — How to externalize configuration in SpringBoot Application?
 
 **Interview Answer (Short):**
 Spring Boot externalizes configuration using a sophisticated **17-level hierarchy** of property sources. The most critical externalization channels are:
@@ -1330,7 +1325,7 @@ State the golden rule of precedence: **Command-line arguments override Environme
 
 ---
 
-### Q542 — 14. Questions about @Profile annotation and categories
+### Q542 — Questions about @Profile annotation and categories
 
 **Interview Answer (Short):**
 `@Profile` categories include:
@@ -1359,7 +1354,7 @@ Always warn against putting sensitive credentials (like production database pass
 
 ## Topic: Production Operations & Security
 
-### Q543 — 15. What is actuator in SpringBoot and Where it is defined in the application
+### Q543 — What is actuator in SpringBoot and Where it is defined in the application
 
 **Interview Answer (Short):**
 Actuator is defined by adding the `spring-boot-starter-actuator` dependency to `pom.xml` or `build.gradle`. Its behavior, security, and exposed endpoints are configured inside `application.properties` or `application.yml` under the `management.*` configuration namespace.
@@ -1404,7 +1399,7 @@ Running Actuator on a **separate management port** (`management.server.port=9001
 
 ---
 
-### Q499 — 3. There were some questions related to Spring Security and JWT authentication.
+### Q499 — There were some questions related to Spring Security and JWT authentication.
 
 **Interview Answer (Short):**
 In a stateless Spring Boot microservice, Spring Security and JWT (JSON Web Token) authentication work together by:
@@ -1442,7 +1437,7 @@ In Spring Security 6 (Spring Boot 3), `SecurityConfigurerAdapter` and `authorize
 
 ## Topic: Dependency & Bean Mechanics
 
-### Q477 — 14)How do you register a third-party library class as a Spring bean ?
+### Q477 — How do you register a third-party library class as a Spring bean ?
 
 **Interview Answer (Short):**
 To register a third-party library class as a Spring bean:
@@ -1479,12 +1474,7 @@ Mention that you can also configure `initMethod` and `destroyMethod` on the `@Be
 
 ---
 
-### Q471 — 9. Difference between @requiredargconstructor and @autowired -----------------------------------------------------------------------------------------------
-
-**Original Question Text / Context:**
-```text
-9. Difference between @requiredargconstructor and @autowired -----------------------------------------------------------------------------------------------
-```
+### Q471 — Difference between @requiredargconstructor and @autowired -----------------------------------------------------------------------------------------------
 
 **Interview Answer (Short):**
 - **`@RequiredArgsConstructor`** is a **Lombok** annotation that generates a constructor for all `final` fields and `@NonNull` fields at compile time.
@@ -1524,24 +1514,7 @@ Explain that `@RequiredArgsConstructor` with `final` fields is the most popular 
 
 ---
 
-### Q468 — 8. You have a rest controller, where a final field and constructor is declared as below.  
- 
-When application is started it fails with error,  
-Parameter 0 of constructor in com.example.simultaneousinsert.runner.TestController 
-required a bean of type 'org.springframework.web.client.RestTemplate' that could not be 
-found. 
-What should be done to fix this error?
-
-**Original Question Text / Context:**
-```text
-8. You have a rest controller, where a final field and constructor is declared as below.  
- 
-When application is started it fails with error,  
-Parameter 0 of constructor in com.example.simultaneousinsert.runner.TestController 
-required a bean of type 'org.springframework.web.client.RestTemplate' that could not be 
-found. 
-What should be done to fix this error?
-```
+### Q468 — You have a rest controller, where a final field and constructor is declared as below.
 
 **Interview Answer (Short):**
 The application fails at startup with:
@@ -1594,7 +1567,7 @@ Mention modern Spring Boot 3: While `RestTemplate` is still supported, Spring 6 
 
 ---
 
-### Q573 — • How do you detect and resolve circular dependencies in Spring applications?
+### Q573 — How do you detect and resolve circular dependencies in Spring applications?
 
 **Interview Answer (Short):**
 A circular dependency occurs when Bean A requires Bean B, and Bean B requires Bean A (A -> B -> A). 
@@ -1646,7 +1619,7 @@ Emphasize that starting in Spring Boot 2.6, `spring.main.allow-circular-referenc
 
 ## Topic: Caching & Ecosystem
 
-### Q549 — 5) What is caching and how it is implemented in Spring Boot
+### Q549 — What is caching and how it is implemented in Spring Boot
 
 **Interview Answer (Short):**
 Caching in Spring Boot temporarily stores the results of expensive operations (e.g. slow database queries or remote API calls) in fast memory. 
@@ -1690,7 +1663,7 @@ Remember: Spring Caching uses **Spring AOP proxies**. Calling a `@Cacheable` met
 
 ---
 
-### Q538 — • Spring starter methods
+### Q538 — Spring starter methods
 
 **Interview Answer (Short):**
 Spring Boot Starters are dependency descriptors that aggregate all required libraries, transitive dependencies, and default configurations for a specific capability into a single import. Examples include `spring-boot-starter-web`, `spring-boot-starter-data-jpa`, and `spring-boot-starter-security`.
@@ -1712,7 +1685,7 @@ Naming convention rule: Official Spring Boot starters are named `spring-boot-sta
 
 ---
 
-### Q497 — 11. Why @orderd , @Qualifier annotations are used
+### Q497 — Why @orderd , @Qualifier annotations are used
 
 **Interview Answer (Short):**
 - **`@Qualifier`** is used for **disambiguation**: it identifies *which specific bean* to inject when multiple beans share the same type.
@@ -1773,7 +1746,7 @@ Answer: **No.** Bean creation order is determined by the dependency graph (depen
 
 ## Topic: Framework Internals & Bean Mechanics
 
-### Q511 — 7. Internal flow of Dependency Injection and IOC
+### Q511 — Internal flow of Dependency Injection and IOC
 
 **Interview Answer (Short):**
 The internal flow of IoC and DI in Spring involves:
@@ -1825,7 +1798,7 @@ Always highlight that AOP proxies (such as transactions and security) are create
 
 ---
 
-### Q485 — 1. What is a dependency injection framework?
+### Q485 — What is a dependency injection framework?
 
 **Interview Answer (Short):**
 A Dependency Injection framework is an infrastructure library or container that automates the lifecycle, configuration, and injection of dependencies between objects. Instead of developers writing manual factories or wiring boilerplate, the framework uses metadata (like annotations) to automatically build the dependency graph.
@@ -1891,7 +1864,7 @@ Interviewers may ask: *"Does Spring do compile-time or runtime dependency inject
 
 ---
 
-### Q569 — 11. Ways of Creating a Spring bean
+### Q569 — Ways of Creating a Spring bean
 
 **Interview Answer (Short):**
 The primary ways of creating a Spring bean are:
@@ -1913,7 +1886,7 @@ Always note that declarative annotations (`@Component` and `@Bean`) are the indu
 
 ---
 
-### Q570 — 12. How Spring beans are instantiated?
+### Q570 — How Spring beans are instantiated?
 
 **Interview Answer (Short):**
 Spring beans are instantiated using **Java Reflection**. 
@@ -1934,7 +1907,7 @@ Answer: *"No! As long as all parameters in a parameterized constructor can be re
 
 ---
 
-### Q551 — 13 How to use multiple classes in spring boot.
+### Q551 — How to use multiple classes in spring boot.
 
 **Interview Answer (Short):**
 To use multiple classes in Spring Boot:
@@ -1964,7 +1937,7 @@ Mention `@Import`: It is the cleanest way to include explicit configuration clas
 
 ---
 
-### Q500 — 1. Difference between java and springboot
+### Q500 — Difference between java and springboot
 
 **Interview Answer (Short):**
 - **Java** is a high-level, class-based, object-oriented programming language designed for platform independence via the JVM (Java Virtual Machine).
@@ -2044,40 +2017,7 @@ When asked a bundled question, organize your response into distinct bullet point
 
 ---
 
-### Q547 — Explain oops principles 
-Arraylist and Linked list differences explain with examples 
-How encapsulation is different from abstraction 
-Explain what is polymorphism and why we need that 
-What is multi threading 
-Explain thread life cycle 
-Wait() and sleep() method differences 
-What is notify() and join() explain how they will work 
-What is executor framework 
-What is forkForkJoinPool 
-Why @orderd , @Qualifier annotatons are used 
-Explain different annotations used in spring application 
-  
-Coding question: 
-Convert Digits Into Alpha-numerical Format.
-
-**Original Question Text / Context:**
-```text
-Explain oops principles 
-Arraylist and Linked list differences explain with examples 
-How encapsulation is different from abstraction 
-Explain what is polymorphism and why we need that 
-What is multi threading 
-Explain thread life cycle 
-Wait() and sleep() method differences 
-What is notify() and join() explain how they will work 
-What is executor framework 
-What is forkForkJoinPool 
-Why @orderd , @Qualifier annotatons are used 
-Explain different annotations used in spring application 
-  
-Coding question: 
-Convert Digits Into Alpha-numerical Format.
-```
+### Q547 — Explain oops principles
 
 **Interview Answer (Short):**
 The four core Object-Oriented Programming (OOP) principles are:
@@ -2098,7 +2038,7 @@ Always ground abstract OOP principles in concrete Spring architectural patterns.
 
 ---
 
-### Q490 — 13 how will you handle multiple spring profiles using JVM args
+### Q490 — how will you handle multiple spring profiles using JVM args
 
 **Interview Answer (Short):**
 To activate multiple Spring profiles using JVM arguments:
@@ -2130,7 +2070,7 @@ Mention alternative ways to pass active profiles:
 
 ## Topic: Reactive Programming & Spring WebFlux
 
-### Q491 — 16. How will you implement Reactive Programming in Springboot
+### Q491 — How will you implement Reactive Programming in Springboot
 
 **Interview Answer (Short):**
 To implement Reactive Programming in Spring Boot:
@@ -2185,7 +2125,7 @@ Answer: **No!** Standard JPA/JDBC is inherently blocking. Running blocking JDBC 
 
 ---
 
-### Q492 — 18. Difference between flux and mono
+### Q492 — Difference between flux and mono
 
 **Interview Answer (Short):**
 Both `Mono` and `Flux` are reactive publishers implementing the Reactive Streams `Publisher<T>` specification from Project Reactor:
@@ -2230,7 +2170,7 @@ Always remember: **"Nothing happens until you subscribe!"** If you create a `Mon
 
 ---
 
-### Q574 — • Can you explain the architecture of Spring WebFlux?
+### Q574 — Can you explain the architecture of Spring WebFlux?
 
 **Interview Answer (Short):**
 The architecture of Spring WebFlux is built on a non-blocking reactive pipeline:
@@ -2262,22 +2202,7 @@ Highlight that in WebFlux, the execution thread is never blocked waiting for net
 
 ## Topic: Performance & Volume Testing
 
-### Q493 — 23. How did you do the volume testing in the TLR 
-Find maximum in list using stream 
-Group student on the basis of grade using stream 
-Diff between stream and parallel stream 
-Life cycle of beans 
-Difference between spring and springboot
-
-**Original Question Text / Context:**
-```text
-23. How did you do the volume testing in the TLR 
-Find maximum in list using stream 
-Group student on the basis of grade using stream 
-Diff between stream and parallel stream 
-Life cycle of beans 
-Difference between spring and springboot
-```
+### Q493 — How did you do the volume testing in the TLR
 
 **Interview Answer (Short):**
 Volume testing in enterprise systems (such as TLR - Transaction Logging and Reconciliation systems) verifies how the application performs when processing massive data volumes over sustained periods. 
@@ -2303,30 +2228,7 @@ When asked about volume testing from your project experience, structure your ans
 
 ## Topic: Domain, Coding & Project Walkthroughs
 
-### Q481 — 7. What is AR system? how do you prioritise features. 
- 
- 
-Introduce about yourself 
-Difference between Abstract and Interface and write syntax 
-Difference between map and flat map 
-Spring bean 
-Dependency injection 
-Spring IOC container 
-Explain about project with example
-
-**Original Question Text / Context:**
-```text
-7. What is AR system? how do you prioritise features. 
- 
- 
-Introduce about yourself 
-Difference between Abstract and Interface and write syntax 
-Difference between map and flat map 
-Spring bean 
-Dependency injection 
-Spring IOC container 
-Explain about project with example
-```
+### Q481 — What is AR system? how do you prioritise features.
 
 **Interview Answer (Short):**
 This transcript question covers two main dimensions:
@@ -2351,8 +2253,7 @@ Always demonstrate that you think like a product-minded engineer: technical deci
 
 ### Q522 — Write the jave code to find the duplicate element in an array using streams
 
-**Original Question Text / Context:**
-```text
+**Original Context:**
 ```text
 Write the jave code to find the duplicate element in an array using streams 
 what are streams ? 
@@ -2375,7 +2276,6 @@ some basic questions on java;
 At last of the interview he asked to select any data structure comfortable , i told arrays 
 ,spring and recursion, he told to print the premutation of the spring abcd using the 
 recursion.
-```
 ```
 
 **Interview Answer (Short):**
@@ -2436,24 +2336,7 @@ In coding rounds where interviewers ask for duplicates using streams, mentioning
 
 ---
 
-### Q552 — Introduction & previous projects 
-tools and technologies used in previous projects 
-how to deploy applications in production 
-how to specify which end points needs to be authenticated in a spring boot application 
-Spring security 
-how to implement jwt authentication step by step and what all files are needed explain in 
-detail
-
-**Original Question Text / Context:**
-```text
-Introduction & previous projects 
-tools and technologies used in previous projects 
-how to deploy applications in production 
-how to specify which end points needs to be authenticated in a spring boot application 
-Spring security 
-how to implement jwt authentication step by step and what all files are needed explain in 
-detail
-```
+### Q552 — Introduction & previous projects
 
 **Interview Answer (Short):**
 A professional self-introduction framework for a Spring Boot Backend Engineer:
